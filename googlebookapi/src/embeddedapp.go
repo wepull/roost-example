@@ -3,8 +3,6 @@
 package main
 
 // embedded flogo app descriptor file
-//"github.com/ZB-io/roost-desktop/samples/googlebook-api/contrib/activity/log",
-//"../contrib/activity/log",
 const flogoJSON string = `{
   "name": "googlebook",
   "type": "flogo:app",
