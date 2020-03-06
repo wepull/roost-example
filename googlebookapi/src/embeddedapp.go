@@ -12,11 +12,11 @@ const flogoJSON string = `{
   "appModel": "1.1.0",
   "description": "",
   "imports": [
-    "contrib/activity/actreturn",
-    "contrib/activity/log",
-    "contrib/activity/rest",
-    "contrib/function/string",
-    "contrib/trigger/rest",
+    "github.com/ZB-io/zbio-example/googlebookapi/src/contrib/activity/actreturn",
+    "github.com/ZB-io/zbio-example/googlebookapi/src/contrib/activity/log",
+    "github.com/ZB-io/zbio-example/googlebookapi/src/contrib/activity/rest",
+    "github.com/ZB-io/zbio-example/googlebookapi/src/contrib/function/string",
+    "github.com/ZB-io/zbio-example/googlebookapi/src/contrib/trigger/rest",
     "github.com/project-flogo/flow"
   ],
   "triggers": [
