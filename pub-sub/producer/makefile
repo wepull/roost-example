@@ -1,6 +1,6 @@
 all: 
 	export GOPRIVATE="github.com/ZB-io/*"
-	GOOS=linux GOARCH=amd64 go build -o bin/producer .
+	GOOS=linux GOARCH=amd64 go build -o bin/zbsample_producer
 	cp ../../security/cert/server.crt bin/
 ifdef NODOCKER
 	echo "DO NOT BUILD IMAGE"
@@ -9,4 +9,4 @@ else
 endif
 
 clean:
-	rm -f bin/*
+	rm -f bin/zbsample_producer
