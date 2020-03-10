@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	zbCli *client.Client2020-03-05T10:21:32.623+0530	info	client/client.go:323	Requested NewMessage data: [topic:"test-topic-1" data:"Message number 56 " ]
+	zbCli *client.Client//2020-03-05T10:21:32.623+0530	info	client/client.go:323	Requested NewMessage data: [topic:"test-topic-1" data:"Message number 56 " ]
 
 )
 
