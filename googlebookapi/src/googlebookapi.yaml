@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zbio-sample-googlebookapi
+  labels:
+    app: zbio-sample-googlebookapi
+spec:
+  containers:
+  - name: zbio
+    image: zbio-example/googlebookapi/src:v1
+    ports:
+      - containerPort: 9999
+    env:
+    - name: BROKER_POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    imagePullPolicy: Never
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 0
+
+---
+kind: Service 
+apiVersion: v1
+metadata:
+    name: googlebookapi
+spec:
+  selector:
+    app: zbio-service
+  ports:
+  - name: internal-port
+    port: 9999
+    targetPort: 9999
