@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: zbio
+  labels:
+    name: zbio
+
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: zbio-broker-group1
+  namespace: zbio
+  creationTimestamp: null
+  labels:
+    app: zbio-broker-group1
+spec:
+  serviceName: zbio-broker-group1-service # does not exist to make this statefulset without service
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zbio-broker-group1
+  template:
+    metadata: 
+      name: zbio-broker-group1
+      labels:
+        app: zbio-broker-group1
+    spec:
+      containers:
+      - name: zbio-broker
+        image: zbio/zbbroker:v1
+        ports:
+        - containerPort: 50003
+        env:
+        - name: BROKER_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ZB_SVC_AP
+          value: zbio-service:50001
+        - name: BROKER_GROUP_NAME
+          value: zbio-broker-group1-service # can be derived from broker name
+        - name: ENABLE_CLOUD_EVENT
+          value: "true"
+        - name: GRPC_GO_LOG_VERBOSITY_LEVEL
+          value: "99" 
+        - name: GRPC_GO_LOG_SEVERITY_LEVEL
+          value: "info"
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: zbio-broker-group2
+  namespace: zbio
+  creationTimestamp: null
+  labels:
+    app: zbio-broker-group2
+spec:
+  serviceName: zbio-broker-group2-service
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zbio-broker-group2
+  template:
+    metadata: 
+      name: zbio-broker-group2
+      labels:
+        app: zbio-broker-group2
+    spec:
+      containers:
+      - name: zbio-broker
+        image: zbio/zbbroker:v1
+        ports:
+        - containerPort: 50003
+        env:
+        - name: BROKER_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: ZB_SVC_AP
+          value: zbio-service:50001
+        - name: BROKER_GROUP_NAME
+          value: zbio-broker-group2-service
+        - name: ENABLE_CLOUD_EVENT
+          value: "true"
+        - name: GRPC_GO_LOG_VERBOSITY_LEVEL
+          value: "99" 
+        - name: GRPC_GO_LOG_SEVERITY_LEVEL
+          value: "info"
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+---
+
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: zbio-broker-group1-service
+#spec:
+#  selector:
+#    app: zbio-broker-group1
+#  ports:
+#  - name: broker-port
+#    port: 50003
+#    targetPort: 50003
+#---
+#
+#kind: Service
+#apiVersion: v1
+#metadata:
+#  name: zbio-broker-group2-service
+#spec:
+#  selector:
+#    app: zbio-broker-group2
+#  ports:
+#  - name: broker-port
+#    port: 50003
+#    targetPort: 50003
+#---
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: zbio-service
+  namespace: zbio
+  creationTimestamp: null
+  labels:
+    app: zbio-service
+spec:
+  serviceName: zbio-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zbio-service
+  template:
+    metadata: 
+      name: zbio-service
+      labels:
+        app: zbio-service
+    spec:
+      containers:
+      - name: zbio-service
+        image: zbio/zbsvc:v1
+        imagePullPolicy: Never
+        env:
+        - name: ENABLE_CLOUD_EVENT
+          value: "true"
+        - name: GRPC_GO_LOG_VERBOSITY_LEVEL
+          value: "99" 
+        - name: GRPC_GO_LOG_SEVERITY_LEVEL
+          value: "info"
+      restartPolicy: Always
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: zbio-service
+  namespace: zbio
+spec:
+  selector:
+    app: zbio-service
+  ports:
+  - name: internal-port
+    port: 50001
+    targetPort: 50001
+  - name: external-port
+    port: 50002
+    targetPort: 50002
