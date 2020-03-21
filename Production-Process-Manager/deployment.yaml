@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-gke-helloworld
+  labels:
+    app: sample-gke-helloworld
+spec:
+  containers:
+  - name: sample
+    image: gke-sample:v1
+    imagePullPolicy: Never
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 0
