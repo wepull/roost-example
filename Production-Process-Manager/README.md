@@ -1,7 +1,7 @@
 # Deploy a simple Node.js app on Kubernetes (GKE)
-# It will be executed on localhost:4000 in browser.
-# User need to give a secret along with a message in browser and the message will be encrypted and cipher text will be genereated.
-# On another tab in the browser the cipher text along with secret should be given as input. Then given message will be displayed on the browser as the output
+ It will be executed on localhost:4000 in browser.
+ User need to give a secret along with a message in browser and the message will be encrypted and cipher text will be genereated.
+ On another tab in the browser the cipher text along with secret should be given as input. Then given message will be displayed on the browser as the output
 
 ## Deploy on Kubernetes (GKE)
 
