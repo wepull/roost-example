@@ -20,11 +20,13 @@ import (
 	"log"
 	"strconv"
 	"time"
+	//"path"
 
 	"client-server-grpc/api"
 	"google.golang.org/grpc"
+	//"github.com/ZB-io/zbio-example/grpc-k8s-health-check/api"
+	//"github.com/ZB-io/zbio/client"
 )
-
 
 func main() {
 	// Command-Line Flag (Defines a string flag with specified name, default value, and usage string).

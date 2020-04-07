@@ -106,7 +106,7 @@ func (s server) Upper(c context.Context, req *api.InputRequest) (*api.OutputResp
 
 	log.Printf("➡️ Received message from client %v: %v ", req.GetClientName(), req.GetText())
 
-	CollectServerLogs(req.GetText())
+	//CollectServerLogs(req.GetText())
 	//if zbioEnabled {
 	//	initZBIO()
 	//}
