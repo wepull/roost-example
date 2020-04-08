@@ -31,9 +31,11 @@ ADD vendor /go/src
 ADD client-grpc /go/src/client-server-grpc/client-grpc
 COPY Collect_Data.go /go/src/client-server-grpc/client-grpc
 
+COPY cert /go/src/client-server-grpc/client-grpc
+ENV SERVER_CRT=/go/src/client-server-grpc/client-grpc
+
+RUN ls /go/src/github.com/ZB-io/zbio/security/cert/
 #RUN go get -u github.com/ZB-io/zbio/client
-ADD cert /go/src/client-server-grpc/client-grpc
-ENV SERVER_CRT="/go/src/client-server-grpc/client-grpc/cert/server.crt"
 #RUN export GO111MODULE=on
 #RUN go get github.com/ZB-io/zbio/client
 # Add api to to the docker image

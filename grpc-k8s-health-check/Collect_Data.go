@@ -35,10 +35,13 @@ const (
 
 func getZBClient() (*zb.Client, error) {
 	var err error
+	fmt.Printf("Hello World12")
 	if zbclient == nil && zbioEnabled {
 		zbClientConfig := zb.Config{Name: "PlaceOrder", ServiceEndPoint: zbioServiceEndpoint}
 
+		fmt.Printf("Hello World")
 		zbclient, err = zb.New(zbClientConfig)
+		fmt.Printf("Hello World1")
 		if err != nil {
 			fmt.Println("failed getting zbio client, errror: %+v", err)
 			return nil, err
@@ -48,25 +51,23 @@ func getZBClient() (*zb.Client, error) {
 }
 
 func initZBIO(str string) {
-	if str == "" {
 		zbclient, _ := getZBClient()
 		if zbclient != nil {
-			topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(10000))
+			topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(1))
 			fmt.Println(topicCreated)
 			if err != nil {
 				fmt.Println("failed to create topic, error: $v", err)
 			}
 			fmt.Println("create topic status: %s : %v", topicName, topicCreated)
 		}
-	} else {
+
 		var zbMessages []zb.Message
 		zbMessages = append(zbMessages, zb.Message{
 			TopicName:     topicName,
 			Data:          []byte(fmt.Sprintf(str)),
 			HintPartition: "",
 		})
-		//sendMessageToZBIO(zbMessages)
-	}
+		sendMessageToZBIO(zbMessages)
 
 }
 
@@ -86,6 +87,7 @@ func sendMessageToZBIO(messages []zb.Message) {
 // connectDB mimics a dummy database that waits some time and then changes the isDatabaseReady flag to true.
 // This service is used to later check the readiness of the server.
 func CollectClientLogs(str string)  {
+	
 	initZBIO(str)
 	log.Println("Collected data from client %v",str)
 }

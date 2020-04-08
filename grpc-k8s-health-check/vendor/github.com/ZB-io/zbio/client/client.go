@@ -11,6 +11,8 @@ import (
 	"io"
 	"os"
 	"path"
+	"crypto/tls"
+	"crypto/rand"
 	"path/filepath"
 	"runtime"
 	"sync"
@@ -129,11 +131,22 @@ func New(cfg Config) (*Client, error) {
 	}
 
 	// Create the client TLS credentials
+
+	TLSConfig := &tls.Config{
+		ServerName:             "zb.io",
+		Certificates:           []tls.Certificate{tls.Certificate{}},
+		Rand:                   rand.Reader,
+		SessionTicketsDisabled: false,
+		MinVersion:             tls.VersionTLS12,
+		InsecureSkipVerify:     true,
+	}
+	creds := credentials.NewTLS(TLSConfig)
+/*
 	creds, err := credentials.NewClientTLSFromFile(crt, "zb.io")
 	if err != nil {
 		log.Fatalf("could not load tls cert: %s", err)
 	}
-
+*/
 	// Set up a connection to the server.
 	if conn, err := grpc.DialContext(context.WithValue(context.Background(), "user_id", cfg.Name),
 		cfg.ServiceEndPoint,
