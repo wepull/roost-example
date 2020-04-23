@@ -1,26 +1,29 @@
 package main
 
 import (
-  greetpb "github.com/roost-io/examples/grpc-go/greeting/greetpb"
   "net"
-  "fmt"
   "log"
   
+  pb "github.com/roost-io/roost-example/grpc-go/greeting/greetpb"
+  "golang.org/x/net/context"
   "google.golang.org/grpc"
 )
 
-type server struct{}
+type Greeter struct{}
+
+func (s *Greeter) SayGreeting(context context.Context, in *pb.GreetRequest)(*pb.GreetResponse,error) {
+  return &pb.GreetResponse{Message: "Hello" + in.Name},nil
+}
 
 func main() {
-  fmt.Println("Hello World")
   lis, err := net.Listen("tcp","0.0.0.0:50051")
   if err != nil {
     log.Fatalf("Failed to listen: %v", err)
   }
   s := grpc.NewServer()
-  greetpb.RegisterGreetServiceServer(s,&server)
+  pb.RegisterGreetServiceServer(s,&Greeter{})
   
-  if err := s.Server(lis); err != nil {
+  if err := s.Serve(lis); err != nil {
     log.Fatalf("failed to serve: %v", err)
   }
 }
