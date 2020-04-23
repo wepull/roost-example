@@ -11,11 +11,16 @@ spec:
     ports:
       - containerPort: 9999
     env:
+    - name: SERVICE_ADDRESS
+      value: zbio-service:50002
     - name: BROKER_POD_NAME
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
     imagePullPolicy: Never
+    resources:
+      requests: {}
+      limits: {}
   restartPolicy: OnFailure
   terminationGracePeriodSeconds: 0
 
@@ -23,11 +28,14 @@ spec:
 kind: Service 
 apiVersion: v1
 metadata:
-    name: googlebookapi
+  name: googlebookapi
+  labels:
+    app: zbio-sample-googlebookapi
 spec:
+  type: LoadBalancer
   selector:
-    app: zbio-service
+    app: zbio-sample-googlebookapi
   ports:
-  - name: internal-port
+  - name: tcp
     port: 9999
     targetPort: 9999

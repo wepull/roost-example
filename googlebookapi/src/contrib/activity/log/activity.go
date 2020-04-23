@@ -18,7 +18,7 @@ const (
 	listenPort          = "5050"
 	usdCurrency         = "USD"
 	zbioServiceEndpoint = "zbio-service:50002"
-	topicName           = "checkoutservice"
+	topicName           = "googleBookAPI"
 	zbioEnabled         = true
 )
 

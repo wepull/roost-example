@@ -1,4 +1,5 @@
 APP=googlebookapi
+
 .PHONY: all
 all: 
 	export GOPRIVATE="github.com/ZB-io/*"
@@ -6,7 +7,7 @@ all:
 ifdef NODOCKER
 	echo "DO NOT BUILD IMAGE"
 else 
-	docker build -f docker/Dockerfile -t zbio-example/${APP}/src:v1 .
+	docker build -f Dockerfile -t zbio/${APP}:v1 bin
 endif
 
 .PHONY: deploy
@@ -16,4 +17,4 @@ deploy:
 .PHONY: clean
 clean:
 	rm -f bin/googlebookapi
-	kubectl delete -f googlebookapi.yaml --all --now=true 
+	kubectl delete -f googlebookapi.yaml --now
