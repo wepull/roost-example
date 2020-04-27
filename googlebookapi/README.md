@@ -5,9 +5,17 @@ ZBIO Topic `googleBookAPI` would be created in zbio and messages are sent to tho
 
 ## Commands to build and deploy Googlebookapi app in k8s cluster
 
-### How to use in localhost
+## How to deploy from roost desktop into roost cluster
 
-* Open http://localhost:9999/books/9788126568772
+Pre-built images exist into the roost cluster
+
+```bash
+kubectl apply -f googlebookapi/src/googlebookapi.yaml
+```
+
+### How to access GoogleBookAPI application
+
+* Open http://localhost:9999/books/9788126568772 
   * isbn_number: `9788126568772` ; URL: http://localhost:9999/books/<isbn_number>
 * ISBN stands for international standard book number , which is
     13 digit number uniquely identify all the books.
@@ -30,4 +38,11 @@ make deploy
 # Deletes googlebookapi binaries
 # Delete deployed application from Kubernetes
 make clean
+```
+
+### View logs
+
+```bash
+kubectl logs service/zbio-service --namespace zbio
+kubectl logs zbio-sample-googlebookapi
 ```
