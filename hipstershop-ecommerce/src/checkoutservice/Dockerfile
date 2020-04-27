@@ -9,8 +9,6 @@ WORKDIR /go/src/$PROJECT
 # restore dependencies
 COPY Gopkg.* ./
 COPY . .
-# ZBIO cert file must be present (TODO: remove cert dependency from client.)
-RUN test -f vendor/github.com/ZB-io/zbio/security/cert/server.crt
 RUN go build -gcflags='-N -l' -o /checkoutservice .
 
 FROM alpine as release
@@ -19,6 +17,5 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.2.0 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe
 COPY --from=builder /checkoutservice /checkoutservice
-COPY --from=builder /go/src/github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/vendor/github.com/ZB-io/zbio/security/cert/server.crt /go/src/github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/vendor/github.com/ZB-io/zbio/security/cert/server.crt
 EXPOSE 5050
 ENTRYPOINT ["/checkoutservice"]

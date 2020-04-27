@@ -41,13 +41,15 @@ import (
 )
 
 const (
-	listenPort          = "5050"
-	usdCurrency         = "USD"
-	zbioServiceEndpoint = "zbio-service:50002"
-	topicName           = "checkoutservice"
+	listenPort  = "5050"
+	usdCurrency = "USD"
+	topicName   = "checkoutservice"
 	// Set zbioEnabled=true to interact with zbio
 	zbioEnabled = true
 )
+
+// Tip: USE ENV[SERVICE_ADDRESS] to set service endpoint
+var zbioServiceEndpoint = "zbio-service.zbio:50002"
 
 var (
 	log      *logrus.Logger
@@ -80,6 +82,9 @@ type checkoutService struct {
 func getZBClient() (*zb.Client, error) {
 	var err error
 	if zbclient == nil && zbioEnabled {
+		if zbsvc := os.Getenv("SERVICE_ADDRESS"); zbsvc != "" {
+			zbioServiceEndpoint = zbsvc
+		}
 		zbClientConfig := zb.Config{Name: "PlaceOrder", ServiceEndPoint: zbioServiceEndpoint}
 
 		zbclient, err = zb.New(zbClientConfig)

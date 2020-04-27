@@ -6,6 +6,8 @@ package client
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -19,6 +21,8 @@ import (
 	"github.com/ZB-io/zbio/log"
 	pbcommon "github.com/ZB-io/zbio/rpc/common"
 	pbservice "github.com/ZB-io/zbio/rpc/service"
+	"github.com/ZB-io/zbio/util"
+
 	"github.com/golang/protobuf/ptypes/empty"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpcretry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
@@ -35,7 +39,7 @@ var (
 	crt             = filepath.Join(rootDir, "security/cert/server.crt")
 	tracer          = opentracing.GlobalTracer()
 	MaxMsgSize      = 64 * 1024 * 1024 // 64 MB default
-	msgReadInterval = time.Duration(2 * time.Second)
+	msgReadInterval = 200 * time.Millisecond
 )
 
 type Config struct {
@@ -129,10 +133,15 @@ func New(cfg Config) (*Client, error) {
 	}
 
 	// Create the client TLS credentials
-	creds, err := credentials.NewClientTLSFromFile(crt, "zb.io")
-	if err != nil {
-		log.Fatalf("could not load tls cert: %s", err)
+	TLSConfig := &tls.Config{
+		ServerName:             "zb.io",
+		Certificates:           []tls.Certificate{tls.Certificate{}},
+		Rand:                   rand.Reader,
+		SessionTicketsDisabled: false,
+		MinVersion:             tls.VersionTLS12,
+		InsecureSkipVerify:     true,
 	}
+	creds := credentials.NewTLS(TLSConfig)
 
 	// Set up a connection to the server.
 	if conn, err := grpc.DialContext(context.WithValue(context.Background(), "user_id", cfg.Name),
@@ -503,10 +512,14 @@ func getPartitionKey(name string, num int32) string {
 func (part *Partition) Start(cons *Consumer) {
 
 	log.Debugf("Started reading partition %s -> %d", part.topic, part.partNum)
+	defer log.Debugf("Ended reading partition %s -> %d", part.topic, part.partNum)
 
 	part.consumer.partitionMapLock.Lock()
 	part.consumer.partitionMap[part.key] = part
 	part.consumer.partitionMapLock.Unlock()
+
+	readUt := util.Timer(msgReadInterval)
+	defer readUt.Stop()
 
 	for {
 
@@ -514,7 +527,7 @@ func (part *Partition) Start(cons *Consumer) {
 		case _ = <-part.stopCh:
 			part.Close()
 			return
-		case <-time.After(msgReadInterval):
+		case <-readUt.Chan():
 			// Make the call to get the message.
 			// After getting the message pass it to part.msgChan
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second)

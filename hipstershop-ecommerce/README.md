@@ -88,7 +88,13 @@ We offer the following installation methods:
    option, you will use pre-built container images that are available publicly,
    instead of building them yourself, which takes a long time).
 
-### Option 1: Running locally
+### Option 1: Running in Roost Cluster [Prebuild images in roost cluster]
+
+```shell
+   skaffold run
+```
+
+### Option 2: Running locally
 
 > 💡 Recommended if you're planning to develop the application or giving it a
 > try on your local cluster.
@@ -131,7 +137,7 @@ We offer the following installation methods:
    application frontend should be available at http://localhost:80 on your
    machine.
 
-### Option 2: Running on Google Kubernetes Engine (GKE)
+### Option 3: Running on Google Kubernetes Engine (GKE)
 
 > 💡 Recommended if you're using Google Cloud Platform and want to try it on
 > a realistic cluster.
@@ -192,7 +198,7 @@ We offer the following installation methods:
     are seeing this, run `kubectl get service frontend-external -o=yaml | kubectl apply -f-`
     to trigger load balancer reconfiguration.
 
-### Option 3: Using Pre-Built Container Images
+### Option 4: Using Pre-Built Container Images
 
 > 💡 Recommended if you want to deploy the app faster in fewer steps to an
 > existing cluster.
