@@ -14,16 +14,11 @@ ZBIO Topic `googleBookAPI` would be created in zbio and messages are sent to tho
 * ISBN can be found in internet. **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
 * The digit should not have any special characters in between.
 
-### When using Kind cluster
-
 ```bash
 
 # Build the googlebookapi application and dockerise;
-# Generate image name: zbio/googlebookapi:v1
+# Generate image name: zbio-example/googlebookapi:v1
 make
-
-# If using kind cluster
-kind load docker-image zbio/googlebookapi:v1
 
 # Deploy application in Kubernetes
 make deploy

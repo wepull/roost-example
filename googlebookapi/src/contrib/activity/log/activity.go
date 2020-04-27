@@ -2,7 +2,7 @@ package log
 
 import (
 	"fmt"
-	//"log"
+	"os"
 
 	zb "github.com/ZB-io/zbio/client"
 	"github.com/project-flogo/core/activity"
@@ -15,12 +15,14 @@ var (
 )
 
 const (
-	listenPort          = "5050"
-	usdCurrency         = "USD"
-	zbioServiceEndpoint = "zbio-service:50002"
-	topicName           = "googleBookAPI"
-	zbioEnabled         = true
+	listenPort  = "5050"
+	usdCurrency = "USD"
+	topicName   = "googleBookAPI"
+	zbioEnabled = true
 )
+
+// Tip: USE ENV[SERVICE_ADDRESS] to set service endpoint
+var zbioServiceEndpoint string = "zbio-service:50002"
 
 func init() {
 	_ = activity.Register(&Activity{}, New)
@@ -56,7 +58,6 @@ func New(ctx activity.InitContext) (activity.Activity, error) {
 	//cmd := exec.Command("man ls")
 
 	act := &Activity{} //add aSetting to instance
-	fmt.Println("Hello World")
 	initZBIO("")
 	return act, nil
 }
@@ -97,11 +98,15 @@ func (a *Activity) Metadata() *activity.Metadata {
 func getZBClient() (*zb.Client, error) {
 	var err error
 	if zbclient == nil && zbioEnabled {
-		zbClientConfig := zb.Config{Name: "PlaceOrder", ServiceEndPoint: zbioServiceEndpoint}
+		if zbsvc := os.Getenv("SERVICE_ADDRESS"); zbsvc != "" {
+			zbioServiceEndpoint = zbsvc
+		}
+		fmt.Printf("service endpoint is: %s", zbioServiceEndpoint)
+		zbClientConfig := zb.Config{Name: "GoogleBookAPI", ServiceEndPoint: zbioServiceEndpoint}
 
 		zbclient, err = zb.New(zbClientConfig)
 		if err != nil {
-			fmt.Println("failed getting zbio client, errror: %+v", err)
+			fmt.Printf("failed getting zbio client, errror: %+v", err)
 			return nil, err
 		}
 	}
@@ -117,7 +122,7 @@ func initZBIO(str string) {
 			if err != nil {
 				fmt.Println("failed to create topic, error: $v", err)
 			}
-			fmt.Println("create topic status: %s : %v", topicName, topicCreated)
+			fmt.Printf("create topic status: %s : %v", topicName, topicCreated)
 		}
 	} else {
 		var zbMessages []zb.Message
@@ -140,7 +145,7 @@ func sendMessageToZBIO(messages []zb.Message) {
 		if err != nil {
 			fmt.Println("failed to write message to zbio, error:", err)
 		}
-		fmt.Println("messages sent to zbio, %v", newMessageStatus)
+		fmt.Printf("messages sent to zbio, %v", newMessageStatus)
 	}
 }
 
