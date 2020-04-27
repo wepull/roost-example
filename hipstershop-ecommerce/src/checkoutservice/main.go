@@ -89,7 +89,7 @@ func getZBClient() (*zb.Client, error) {
 
 		zbclient, err = zb.New(zbClientConfig)
 		if err != nil {
-			log.Warn("failed getting zbio client, errror: %+v", err)
+			log.Warn("failed getting zbio client, error: %+v", err)
 			return nil, err
 		}
 	}
@@ -101,7 +101,7 @@ func initZBIO() {
 	if zbclient != nil {
 		topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(0), int32(10000))
 		if err != nil {
-			log.Warnf("failed to create topic, error: $v", err)
+			log.Warnf("failed to create topic, error: %v", err)
 		}
 		log.Infof("create topic status: %s : %v", topicName, topicCreated)
 	}
@@ -113,7 +113,7 @@ func sendMessageToZBIO(messages []zb.Message) {
 	if topicFound {
 		newMessageStatus, err := zbclient.NewMessage(messages)
 		if err != nil {
-			log.Warnf("failed to write message to zbio, error:", err)
+			log.Warnf("failed to write message to zbio, error: %v", err)
 		}
 		log.Infof("messages sent to zbio, %v", newMessageStatus)
 	}
