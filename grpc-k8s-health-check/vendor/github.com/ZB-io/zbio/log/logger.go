@@ -37,7 +37,7 @@ type Configuration struct {
 func newLogger() (Logger, error) {
 	config := Configuration{
 		EnableConsole:     true,
-		ConsoleLevel:      Debug,
+		ConsoleLevel:      Info,
 		ConsoleJSONFormat: false,
 		EnableFile:        false,
 		FileLevel:         Info,

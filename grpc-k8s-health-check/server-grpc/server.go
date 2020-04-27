@@ -15,11 +15,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
-	//"fmt"
 
-	"client-server-grpc/api"
+	"github.com/roost-io/roost-example/grpc-k8s-health-check/api"
+
+	zb "github.com/ZB-io/zbio/client"
+	zbutil "github.com/roost-io/roost-example/grpc-k8s-health-check/message"
+
 	"context"
 	"strings"
 
@@ -28,71 +32,12 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	//zb "github.com/ZB-io/zbio/client"
 )
-
-/*const (
-	listenPort          = "5050"
-	usdCurrency         = "USD"
-	zbioServiceEndpoint = "zbio-service:50002"
-	topicName           = "checkoutservice"
-	zbioEnabled         = true
-)
-
-var (
-	//log      *logrus.Logger
-	zbclient *zb.Client
-	
-)*/
 
 // server struct
 type server struct {
 	Name string
 }
-
-/*func getZBClient() (*zb.Client, error) {
-	var err error
-	if zbclient == nil && zbioEnabled {
-		zbClientConfig := zb.Config{Name: "PlaceOrder", ServiceEndPoint: zbioServiceEndpoint}
-
-		zbclient, err = zb.New(zbClientConfig)
-		if err != nil {
-			fmt.Println("failed getting zbio client, errror: %+v", err)
-			return nil, err
-		}
-	}
-	return zbclient, nil
-}
-
-func initZBIO() {
-	zbclient, _ := getZBClient()
-	if zbclient != nil {
-		topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(10000))
-		if err != nil {
-			fmt.Println("failed to create topic, error: $v", err)
-		}
-		fmt.Println("create topic status: %s : %v", topicName, topicCreated)
-		var zbMessages []zb.Message
-		zbMessages = append(zbMessages, zb.Message{
-			TopicName:     topicName,
-			Data:          []byte(fmt.Sprintf("Message Created")),
-			HintPartition: "",
-		})
-		sendMessageToZBIO(zbMessages)
-	}
-}
-
-func sendMessageToZBIO(messages []zb.Message) {
-	// send messages only if topic exists zbClient.DescribeTopics([]string{topicName})
-	var topicFound = true
-	if topicFound {
-		newMessageStatus, err := zbclient.NewMessage(messages)
-		if err != nil {
-			fmt.Println("failed to write message to zbio, error:", err)
-		}
-		fmt.Println("messages sent to zbio, %v", newMessageStatus)
-	}
-}*/
 
 // happyUpper takes a string and converts it to upper case and adds a smiley face emoji at the end of the string.
 func happyUpper(s string) string {
@@ -101,17 +46,18 @@ func happyUpper(s string) string {
 
 // This function takes in the context named c, and an api (api is the name of our proto file) request named req and outputs a pointer to the OutputResponse.
 func (s server) Upper(c context.Context, req *api.InputRequest) (*api.OutputResponse, error) {
+	reqAck := fmt.Sprintf("➡️ Received message from client %v: %v ", req.GetClientName(), req.GetText())
+	log.Printf(reqAck)
+
+	// Send requset ack message from grpc server side
+	message := zb.Message{
+		TopicName:     zbutil.TopicName, // default topicName
+		Data:          []byte(reqAck),
+		HintPartition: "",
+	}
+	zbutil.SendMessageToZBIO([]zb.Message{message})
 
 	x := happyUpper(req.GetText())
-
-	log.Printf("➡️ Received message from client %v: %v ", req.GetClientName(), req.GetText())
-
-	CollectServerLogs(req.GetText())
-	//if zbioEnabled {
-	//	initZBIO()
-	//}
-
-	//log.Printf("Hello World")
 	// Return a pointer to the api OutputResponse struct where server name equals to serverName and Text equals to x, and error is nil.
 	return &api.OutputResponse{ServerName: serverName, Text: x}, nil
 }
@@ -138,7 +84,6 @@ func (h *Health) Check(ctx context.Context, req *grpc_health_v1.HealthCheckReque
 			Status: grpc_health_v1.HealthCheckResponse_UNKNOWN,
 		}, nil
 	}
-
 }
 
 // Watch is used by clients to receive updates when the service status changes.
@@ -162,6 +107,17 @@ func startGrpcServer() {
 	// Using NewServer() function from "google.golang.org/grpc" library to create a new grpc server object.
 	grpcServer := grpc.NewServer()
 	srv := &server{Name: serverName}
+
+	zbConfig := zbutil.Config(srv.Name)
+	zbutil.InitZBIO(zbConfig)
+
+	message := zb.Message{
+		TopicName:     zbutil.TopicName, // default topicName
+		Data:          []byte(fmt.Sprintf("Application grpc-server starting. zbClientName: %s\n", srv.Name)),
+		HintPartition: "",
+	}
+
+	zbutil.SendMessageToZBIO([]zb.Message{message})
 
 	// Register our service on the server. Use a function from the api (proto) called RegisterProcessTextServer, pass the server and a reference from server struct type.
 	api.RegisterProcessTextServer(grpcServer, srv)

@@ -17,24 +17,23 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"strconv"
 	"time"
-	//"path"
 
-	"client-server-grpc/api"
+	"github.com/roost-io/roost-example/grpc-k8s-health-check/api"
+
+	zb "github.com/ZB-io/zbio/client"
+	zbutil "github.com/roost-io/roost-example/grpc-k8s-health-check/message"
+
 	"google.golang.org/grpc"
-	//"github.com/ZB-io/zbio-example/grpc-k8s-health-check/api"
-	//"github.com/ZB-io/zbio/client"
 )
 
 func main() {
 	// Command-Line Flag (Defines a string flag with specified name, default value, and usage string).
 	// Default ip and port: 127.0.0.1:3000
 	// Usage: ./client -ip=127.0.0.1:3000
-	/*if val := os.Getenv("SERVER_CRT"); val != "" {
-		crt := val
-	}*/
 	ipPtr := flag.String("ip", "127.0.0.1:3000", "Description: ip address")
 
 	// Once all flags are declared, we call `flag.Parse()' to execute the command-line parsing.
@@ -60,8 +59,19 @@ func main() {
 
 	log.Printf("💡 Client's name is %s", randomClientName)
 
+	zbConfig := zbutil.Config(randomClientName)
+	zbutil.InitZBIO(zbConfig)
+
+	message := zb.Message{
+		TopicName:     zbutil.TopicName, // default topicName
+		Data:          []byte(fmt.Sprintf("Application grpc-server starting. zbClientName: %s\n", randomClientName)),
+		HintPartition: "",
+	}
+	zbutil.SendMessageToZBIO([]zb.Message{message})
+
 	for {
 
+		var message zb.Message
 		// Create a random string of length 10 to send to the server.
 		randomMessage := randomString(10)
 
@@ -73,20 +83,35 @@ func main() {
 			Text:       randomMessage,
 			ClientName: randomClientName}
 
-		log.Println("⬅️ Client sent a message to server :", randomMessage)
+		requestLog := fmt.Sprintf("⬅️ Client sent a message to server : %s", randomMessage)
+		log.Println(requestLog)
+
+		// Send requested message to zbio
+		message = zb.Message{
+			TopicName:     message.TopicName, // default topicName
+			Data:          []byte(requestLog),
+			HintPartition: "",
+		}
+		zbutil.SendMessageToZBIO([]zb.Message{message})
 
 		// Receive response.
 		resp, err := client.Upper(ctx, reqMessage)
 		if err != nil {
 			log.Printf("❌ Error doing upper : %v", err)
 		}
-		log.Printf("➡️ Received Response from server %v : %s ", resp.GetServerName(), resp.Text)
 
-		CollectClientLogs(resp.Text)
+		responseLog := fmt.Sprintf("➡️ Received Response from server %v : %s ", resp.GetServerName(), resp.Text)
+		log.Printf(responseLog)
+
+		// Send response message to zbio
+		message = zb.Message{
+			TopicName:     message.TopicName, // default topicName
+			Data:          []byte(responseLog),
+			HintPartition: "",
+		}
+		zbutil.SendMessageToZBIO([]zb.Message{message})
 
 		// Sleep for 2 seconds before sending another message.
-		time.Sleep(4 * time.Second)
-
+		time.Sleep(2 * time.Second)
 	}
-
 }

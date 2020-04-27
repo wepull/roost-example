@@ -16,7 +16,6 @@ package main
 
 import (
 	"log"
-	"os"
 )
 
 const (
@@ -26,13 +25,9 @@ const (
 
 // Initially the dummy db is not ready and the isDatabaseReady flag is false.
 var isDatabaseReady = false
-var crt = "/go/src/client-server-grpc/cert/server.crt"
 
 func main() {
 
-	if val := os.Getenv("SERVER_CRT"); val != "" {
-		crt = val
-	}
 	log.Println("🚀 Launching server...")
 	go connectDB() // go routine runs connecting to db in parallel.
 	startGrpcServer()

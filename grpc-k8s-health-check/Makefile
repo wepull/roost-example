@@ -18,8 +18,11 @@ deps:
 deploy: 
 	kubectl apply -f kubernetes/deploy.yaml
 
+clean:
+	kubectl delete -f kubernetes/deploy.yaml
+
 # Delete deployment and images
-clean-kind:
+clean-minikube:
 	kubectl delete deploy grpc-deploy || true
 	docker rmi -f serverimg || true
 	docker rmi -f clientimg || true

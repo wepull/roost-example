@@ -2,7 +2,35 @@
 
 
 [[projects]]
-  digest = "1:7ade0e7351787347d3dd3456abb365fd71ea75c19a859505e6a427064e1f9e42"
+  digest = "1:2e7cf22a849a287f4ce1129785591fc0dff7bf2fdeeb072a27375d73b68bb18a"
+  name = "github.com/ZB-io/zbio"
+  packages = [
+    ".",
+    "client",
+    "client/config",
+    "config",
+    "log",
+    "rpc/common",
+    "rpc/service",
+    "service/middleware/tracer",
+    "tracer",
+    "tracer/otel",
+    "util",
+  ]
+  pruneopts = "UT"
+  revision = "5e179f9f53d39b8c4aae703ae6f48bb5ddd96ddd"
+  version = "v0.0.5"
+
+[[projects]]
+  digest = "1:2505ada8a497ded339532cfaae30c15365f4e82245a3dbaff7a8453c086b0667"
+  name = "github.com/apache/thrift"
+  packages = ["lib/go/thrift"]
+  pruneopts = "UT"
+  revision = "cecee50308fc7e6f77f55b3fd906c1c6c471fa2f"
+  version = "v0.13.0"
+
+[[projects]]
+  digest = "1:e990969aa1e50a90b32339bde4ba5bea3f81e8da8c15f20f62786c4dfb8ae45b"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -10,15 +38,111 @@
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
+    "ptypes/empty",
     "ptypes/timestamp",
   ]
   pruneopts = "UT"
-  revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
-  version = "v1.3.2"
+  revision = "1b794fe86dd6a0c7c52ae69b5c9cb0aeedc52afa"
+  version = "v1.4.0"
+
+[[projects]]
+  digest = "1:0e147d206ca6e979f30f99d11dfe85d427962ac9642a2da026cd9dd3926454d3"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [
+    ".",
+    "retry",
+    "util/backoffutils",
+    "util/metautils",
+  ]
+  pruneopts = "UT"
+  revision = "3c51f7f332123e8be5a157c0802a228ac85bf9db"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:d2aa096fe6b539afe74dd6ab8e9a160304707f1477b01c637b4bbe20d262a25c"
+  digest = "1:1a1206efd03a54d336dce7bb8719e74f2f8932f661cb9f57d5813a1d99c083d8"
+  name = "github.com/grpc-ecosystem/grpc-opentracing"
+  packages = ["go/otgrpc"]
+  pruneopts = "UT"
+  revision = "8e809c8a86450a29b90dcc9efbf062d0fe6d9746"
+
+[[projects]]
+  digest = "1:11e62d6050198055e6cd87ed57e5d8c669e84f839c16e16f192374d913d1a70d"
+  name = "github.com/opentracing/opentracing-go"
+  packages = [
+    ".",
+    "ext",
+    "log",
+  ]
+  pruneopts = "UT"
+  revision = "659c90643e714681897ec2521c60567dd21da733"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:996a229503ee6f134980a1b6d68d9ef49b769f3ed85e5ef460d492389375198b"
+  name = "go.opentelemetry.io/otel"
+  packages = [
+    "api/core",
+    "api/correlation",
+    "api/global",
+    "api/global/internal",
+    "api/key",
+    "api/label",
+    "api/metric",
+    "api/metric/registry",
+    "api/propagation",
+    "api/trace",
+    "api/unit",
+    "exporters/trace/jaeger",
+    "exporters/trace/jaeger/internal/gen-go/jaeger",
+    "exporters/trace/stdout",
+    "internal/trace/parent",
+    "plugin/grpctrace",
+    "sdk",
+    "sdk/export/trace",
+    "sdk/internal",
+    "sdk/resource",
+    "sdk/trace",
+    "sdk/trace/internal",
+  ]
+  pruneopts = "UT"
+  revision = "1de7f68bfc3b9d9f8e9c7f10ea231d0ee701c718"
+  version = "v0.4.3"
+
+[[projects]]
+  digest = "1:19525e48b45af69339bd7c2812137dbd1e650a78fc09c7c75482e307d51aa28d"
+  name = "go.uber.org/atomic"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "845920076a298bdb984fb0f1b86052e4ca0a281c"
+  version = "v1.6.0"
+
+[[projects]]
+  digest = "1:a23ddd39502ba94e2a72815a946d0edec801defcf0a0c0530d04acee1f455128"
+  name = "go.uber.org/multierr"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b587143a48b62b01d337824eab43700af6ffe222"
+  version = "v1.5.0"
+
+[[projects]]
+  digest = "1:8e22fc6a99b3054c643f020c29a8e5c7809e75292b4960b26b60f717a201b6dc"
+  name = "go.uber.org/zap"
+  packages = [
+    ".",
+    "buffer",
+    "internal/bufferpool",
+    "internal/color",
+    "internal/exit",
+    "zapcore",
+  ]
+  pruneopts = "UT"
+  revision = "feeb9a050b31b40eec6f2470e7599eeeadfe5bdd"
+  version = "v1.15.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:047ab7748a588b6e99382ca5f0a9be6707033bcf12ad9a556a46a10b689ab940"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -30,15 +154,23 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "ca1201d0de80cfde86cb01aea620983605dfe99b"
+  revision = "ff2c4b7c35a07b0c1e90ce72aa7bfe41bb66a3cb"
 
 [[projects]]
   branch = "master"
-  digest = "1:5632b0c4d972da51b5914f09fc5c1a8535e9d8d5d937e95ef83c423a0dd67f13"
+  digest = "1:4692f916cb72b2c295f04841036d85a3f13e96d1cc9e8e4c2c30edebac518053"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  pruneopts = "UT"
+  revision = "43a5402ce75a95522677f77c619865d66b8c57ab"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f88172369bcdae548777d8f2c59b11561f7e41686f426c583a7abaeec6978cc7"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
+  revision = "1957bb5e6d1f523308b49060df02171d06ddfc77"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -66,18 +198,28 @@
   version = "v0.3.2"
 
 [[projects]]
+  digest = "1:131bc50e116be277361bbc3e136693426a003bc57a427bb2d375c256f6a8cc61"
+  name = "google.golang.org/api"
+  packages = ["support/bundler"]
+  pruneopts = "UT"
+  revision = "e50386d957b9722c99d7de922c42d9226a39e82e"
+  version = "v0.22.0"
+
+[[projects]]
   branch = "master"
-  digest = "1:583a0c80f5e3a9343d33aea4aead1e1afcc0043db66fdf961ddd1fe8cd3a4faf"
+  digest = "1:1c2a9b5021f7fe23a6f880468633f407f8b600a67e29b10f1892ae4425085820"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "c506a9f9061087022822e8da603a52fc387115a8"
+  revision = "bca184e23272c97429f0cb78a825f71ede0635fc"
 
 [[projects]]
-  digest = "1:1812e1e0a0f7a1cc43a39b53c039b5792414a9f532424e7beaa1c9c783b2e7e2"
+  digest = "1:cb06f8927e8616210275f62acfed5eb5e2aa5fbe647d6909d76be74cdcc1d448"
   name = "google.golang.org/grpc"
   packages = [
     ".",
+    "attributes",
+    "backoff",
     "balancer",
     "balancer/base",
     "balancer/roundrobin",
@@ -94,10 +236,16 @@
     "internal/backoff",
     "internal/balancerload",
     "internal/binarylog",
+    "internal/buffer",
     "internal/channelz",
     "internal/envconfig",
+    "internal/grpclog",
     "internal/grpcrand",
     "internal/grpcsync",
+    "internal/grpcutil",
+    "internal/resolver/dns",
+    "internal/resolver/passthrough",
+    "internal/status",
     "internal/syscall",
     "internal/transport",
     "keepalive",
@@ -107,21 +255,70 @@
     "reflection",
     "reflection/grpc_reflection_v1alpha",
     "resolver",
-    "resolver/dns",
-    "resolver/passthrough",
     "serviceconfig",
     "stats",
     "status",
     "tap",
   ]
   pruneopts = "UT"
-  revision = "1d89a3c832915b2314551c1d2a506874d62e53f7"
-  version = "v1.22.0"
+  revision = "754ee590a4f386d0910d887f3b8776354042260b"
+  version = "v1.29.1"
+
+[[projects]]
+  digest = "1:e98a83a6464ab71657c759d986a8a1dd9757885bc6c0e4167dffa9f5233c97cf"
+  name = "google.golang.org/protobuf"
+  packages = [
+    "encoding/prototext",
+    "encoding/protowire",
+    "internal/descfmt",
+    "internal/descopts",
+    "internal/detrand",
+    "internal/encoding/defval",
+    "internal/encoding/messageset",
+    "internal/encoding/tag",
+    "internal/encoding/text",
+    "internal/errors",
+    "internal/fieldnum",
+    "internal/fieldsort",
+    "internal/filedesc",
+    "internal/filetype",
+    "internal/flags",
+    "internal/genname",
+    "internal/impl",
+    "internal/mapsort",
+    "internal/pragma",
+    "internal/set",
+    "internal/strs",
+    "internal/version",
+    "proto",
+    "reflect/protoreflect",
+    "reflect/protoregistry",
+    "runtime/protoiface",
+    "runtime/protoimpl",
+    "types/descriptorpb",
+    "types/known/anypb",
+    "types/known/durationpb",
+    "types/known/emptypb",
+    "types/known/timestamppb",
+  ]
+  pruneopts = "UT"
+  revision = "3b9eee12916ce611400f93d6c2fed2fc2911b0ad"
+  version = "v1.21.0"
+
+[[projects]]
+  digest = "1:c805e517269b0ba4c21ded5836019ed7d16953d4026cb7d00041d039c7906be9"
+  name = "gopkg.in/natefinch/lumberjack.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a96e63847dc3c67d17befa69c303767e2f84e54f"
+  version = "v2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/ZB-io/zbio",
+    "github.com/ZB-io/zbio/client",
     "github.com/golang/protobuf/proto",
     "golang.org/x/net/context",
     "google.golang.org/grpc",

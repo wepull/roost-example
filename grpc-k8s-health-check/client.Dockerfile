@@ -10,49 +10,15 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 
-#FROM ubuntu:18.04
-#FROM golang:latest
-#RUN apt update
-#RUN apt install -y git
-
-#RUN git --version
-
-FROM golang:1.12.5-alpine3.9 AS BUILD_STAGE
-#RUN apt-get update
-#RUN apt-get install gcc make
-#RUN add-apt-repository ppa:duh/golang
-#RUN apt-get install golang
-
-#RUN apt-get update && yes | apt-get upgrade
-#FROM ubuntu
-# Add vendor to GOPATH
-ADD vendor /go/src
-# Add client-grpc to the docker image
-ADD client-grpc /go/src/client-server-grpc/client-grpc
-COPY Collect_Data.go /go/src/client-server-grpc/client-grpc
-
-COPY cert /go/src/client-server-grpc/client-grpc
-ENV SERVER_CRT=/go/src/client-server-grpc/client-grpc
-
-RUN ls /go/src/github.com/ZB-io/zbio/security/cert/
-#RUN go get -u github.com/ZB-io/zbio/client
-#RUN export GO111MODULE=on
-#RUN go get github.com/ZB-io/zbio/client
-# Add api to to the docker image
-ADD api /go/src/client-server-grpc/api
-# Set working dir in the container 
-WORKDIR /go/src/client-server-grpc/client-grpc
-#RUN apt-get update && yes | apt-get upgrade
-#RUN apt-get install git 
-
-RUN ls /go/src/client-server-grpc/client-grpc
-# Build the program and output it to app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /app
-RUN ls -al /app
+FROM golang:1.12-alpine as builder
+ENV PROJECT github.com/roost-io/roost-example/grpc-k8s-health-check
+WORKDIR /go/src/$PROJECT
+COPY . .
+WORKDIR /go/src/$PROJECT/client-grpc/
+RUN go build -gcflags='-N -l' -o /app
 # Make the dockerfile more optimized by using multistage dockerbuild which we copy the binary from the BUILD_STAGE container to the final container.
 # The second FROM instruction starts a new build stage with the alpine image as its base.
 FROM alpine:3.9
-RUN ls
-COPY --from=BUILD_STAGE /app /app
+COPY --from=builder /app /app
 # The ENTRYPOINT of an image specifies what executable to run when the container starts.
 ENTRYPOINT ["/app"]

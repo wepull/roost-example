@@ -1,0 +1,28 @@
+.git
+.dockerignore
+.gitignore
+standalone.sh
+kube.sh
+/workspace.xml
+*.iml         // IntelliJ
+*.ipr         // IntelliJ
+*.iws         // IntelliJ
+.idea/        // IntelliJ
+.DS_Store
+common.mk
+**/*.yaml
+**/*.md
+
+# Unnecessary files
+diff.txt
+
+# Directories to ignore
+./docs
+./kubernetes-manifests
+./docker-manifests
+./scratchpad
+script
+usecase
+_output
+vendor
+desktop

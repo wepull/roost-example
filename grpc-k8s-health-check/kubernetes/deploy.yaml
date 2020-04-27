@@ -30,6 +30,9 @@ spec:
       containers:
       - name: server
         image: serverimg
+        env:
+        - name: SERVICE_ADDRESS
+          value: zbio-service.zbio:50002
         imagePullPolicy: Never
         ports:
         - containerPort: 3000
@@ -47,5 +50,8 @@ spec:
           periodSeconds: 1
       - name: client
         image: clientimg
+        env:
+        - name: SERVICE_ADDRESS
+          value: zbio-service.zbio:50002
         # Since we push image to `minikube docker-env` we want it to pull locally and not from dokcer hub. 
         imagePullPolicy: Never
