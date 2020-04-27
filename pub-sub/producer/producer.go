@@ -3,21 +3,25 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/ZB-io/zbio/client"
 )
 
 var (
-	zbCli *client.Client
+	zbCli               *client.Client
+	topicName           string = "pub-sub-example"
+	zbioServiceEndpoint string = "zbio-service:50002"
 )
 
 func init() {
-
+	if zbsvc := os.Getenv("SERVICE_ADDRESS"); zbsvc != "" {
+		zbioServiceEndpoint = zbsvc
+	}
 	cfg := client.Config{
-
 		Name:            "TestProducer",
-		ServiceEndPoint: "zbio-service:50002",
+		ServiceEndPoint: zbioServiceEndpoint,
 	}
 	cli, err := client.New(cfg)
 
@@ -28,33 +32,37 @@ func init() {
 	}
 }
 
-func CreateTopics() {
-	var topic string
-	var topics []string
-
-	for i := 1; i < 5; i++ {
-		topic = fmt.Sprintf("test-topic-%d", i)
-		log.Printf("Topic Name: %v", topic)
-		topics = append(topics, topic)
-	}
-
+func createTopics() {
+	var topics = []string{"pub-sub-example-1", "pub-sub-example-2"}
 	ok, err := zbCli.CreateTopics(topics, "", 3, 1, 100000)
 	if !ok {
-		fmt.Errorf("Unable to create Topics due to error: %v", err)
+		log.Fatalf("Unable to create Topics due to error: %v", err)
 	}
 }
 
-func SendNewMessage() {
+/*
+TODO:
+	1. No need to sleep for a sec.
+*/
+func sendNewMessage() {
 	messages := []client.Message{
 		client.Message{
-			TopicName:     "test-topic-1",
+			TopicName:     "pub-sub-example-1",
+			HintPartition: "",
+			Data:          []byte("Message number 0"),
+		},
+		client.Message{
+			TopicName:     "pub-sub-example-2",
 			HintPartition: "",
 			Data:          []byte("Message number 0"),
 		},
 	}
 
-	for i := 0; i < 1000; i++ {
+	// Send 1000 messages
+	for i := 0; i < 10; i++ {
 		messages[0].Data = []byte(fmt.Sprintf("Message number %d ", i))
+		messages[1].Data = []byte(fmt.Sprintf("Topic Message count %d ", i))
+
 		response, err := zbCli.NewMessage(messages)
 		if err != nil {
 			log.Fatalf("NewMessage failed with error: %v", err)
@@ -66,12 +74,10 @@ func SendNewMessage() {
 }
 
 func startProducer() {
-	CreateTopics()
-	SendNewMessage()
+	createTopics()
+	sendNewMessage()
 }
 
 func main() {
-
 	startProducer()
-
 }

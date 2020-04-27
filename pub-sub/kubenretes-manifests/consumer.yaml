@@ -10,7 +10,7 @@ spec:
     image: zbio-example/consumer:v1
     env:
     - name: SERVICE_ADDRESS
-      value: "zbio-service"
+      value: "zbio-service.zbio:50002"
     resources:
       requests:
         cpu: 200m

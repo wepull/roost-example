@@ -23,6 +23,9 @@ make deploy
 # View producer and consumer's log
 kubectl logs zbio-sample-producer
 kubectl logs zbio-sample-consumer
+
+# View zbio service logs
+kubectl logs service/zbio-service --namespace zbio
 ```
 
 ### Cleaning
