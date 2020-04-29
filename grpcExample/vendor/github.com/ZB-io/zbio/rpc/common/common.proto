@@ -1,0 +1,215 @@
+syntax = "proto3";
+
+package zbio.roost.common;
+//package messaging.common;
+option go_package = "github.com/ZB-io/zbio/rpc/common";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+//import "cloud_event.proto";
+
+
+// The request message
+message TestRequest {
+    string name = 1;
+}
+
+// The response message
+message TestResponse {
+    string message = 1;
+}
+
+// Structure to hold values when some request has failed ..partially or fully
+message ResponseStatus {
+    enum Code {
+        OK = 0;
+        FAILED = 1;
+        RETRY_LATER = 2;
+        AUTH_FAILED = 3;
+        NOT_IMPLEMENTED = 4;
+    }
+    Code code = 1;
+    string message = 2; // can be topic.name, broker.name, Consumer.name, ConsumerGroup.name
+    repeated google.protobuf.Any details = 3; // Additional details around failure reason
+}
+
+// struct to hold timestamp especially for topic, consumer group
+message Audit {
+    string createdBy = 1;
+    google.protobuf.Timestamp created = 2;
+    string lastUpdatedBy = 3;
+    google.protobuf.Timestamp last_modified = 4;
+}
+
+// Topic that is created by producer/admin; available for modifications
+message Topic {
+    string name = 1;
+    int32 num_partitions = 2;
+    int32 num_replicas = 3;
+    int32 msg_retention_duration_seconds = 4;
+    Audit audit = 5;
+}
+
+// API can deal with an array of topics
+message TopicRequest {
+    repeated Topic topics = 1;
+}
+
+// successful created/retrieved topics and failed one in responses ..expect nil
+message TopicResponse {
+    repeated Topic created_topics = 1;
+    map<string, ResponseStatus> responses = 2;
+}
+
+// successfully updated topics and failed one in responses ..expect nil
+message UpdateTopicResponse {
+    repeated Topic updated_topics = 1;
+    map<string, ResponseStatus> responses = 2;
+}
+
+// Topic names that are to be deleted
+message DeleteTopicRequest {
+    repeated string names = 1;
+}
+
+// Topics that are deleted with complete info and the ones that could not be in responses ..expect nil
+message DeleteTopicResponse {
+    repeated Topic deleted_topics = 1;
+    map<string, ResponseStatus> responses = 2;
+}
+
+// Topic names that are to be retrieved
+message DescribeTopicRequest {
+    repeated string names = 1;
+}
+
+// Topic details retrieved successfully in 'topics' and failed ones in responses .. expect nil  
+message DescribeTopicResponse {
+    repeated Topic topics = 1;
+    map<string, ResponseStatus> responses = 2;
+}
+
+///////////
+// Consumer related struct
+//////////
+
+// Consumer and its group and subscribed topics
+message Consumer {
+    string name = 1;
+    string consumer_group = 2;
+    repeated string topics = 3;
+}
+
+// Create a consumer
+message ConsumerRequest {
+    Consumer consumer = 1;
+}
+
+// TBD: need to discuss this
+message InitResponse {
+    Consumer consumer = 1;
+    map<string, ResponseStatus> responses = 2;
+    string SessionId = 3;
+}
+
+// TBD: 
+message RebalanceResponse {
+
+    message PartitionDetails {
+        int32 partnum = 1;
+        int64 offset = 2;
+    }
+
+    string topicName = 1;
+    repeated PartitionDetails owned = 2;
+    repeated PartitionDetails added = 3;
+    repeated PartitionDetails deleted = 4;
+}
+
+// TBD: 
+message ConsumerResponse {
+    oneof Response {
+        InitResponse InitResponse = 1;
+        RebalanceResponse RebalResponse = 2;
+    }
+}
+
+// Info requested for Consumer.name
+message DescribeConsumerRequest {
+    repeated string names = 1;
+}
+
+// Create/Send Message: partition is optional
+// https://github.com/cloudevents/spec/blob/master/spec.md
+message Message {
+    //subject or topic- REQUIRED
+    string topic = 1;
+    //uuid - REQUIRED
+    int64 id = 2;
+    //type of event related to the originating occurrence - REQUIRED
+    string type = 3;
+    // REQUIRED
+    string source = 4;
+    //subject or topic- REQUIRED
+    bytes data = 5;
+    //The version of the CloudEvents specification which the event uses - REQUIRED
+    string spec_version = 6;
+
+    string subject = 7;
+    google.protobuf.Timestamp time = 8;
+    //Identifies the schema that data adheres to
+    string data_schema_uri = 9;
+    //rfc2046
+    string content_type = 10;
+    //any number of additional context attributes with distinct names, known as "extension attributes".
+    map<string, string> extensions = 11;
+
+    string hint_partition = 12;
+
+    //string topic = 1;
+    //string hint_partition = 2;
+    //CloudEvent cloud_event = 3;
+}
+
+// Producer can send multiple new messages for different topic+partition messages
+message NewMessageRequest {
+    repeated Message messages = 2;
+}
+
+// For each topic and partition, this struct will specify the message id until which it is present
+message MessageInfo {
+    string topicName = 1;
+    int32 partition = 2;
+    int64 offset = 3; // the maximum sequence id for the messages in this topic+partition
+}
+
+// Response to consumer for read message
+message NewMessageResponse {
+    repeated MessageInfo info = 1;
+    map<string, ResponseStatus> responses = 2; // failed msg string and reason for failure
+}
+
+message MessageRequest {
+    Consumer consumer = 1;
+    MessageInfo info = 2; // info.offset can contain value to specify from where to read msg
+    string SessionId = 3;
+}
+
+message GetMessageResponse {
+    repeated Message messages = 1;
+    ResponseStatus response = 2;
+}
+
+message AckMessageResponse {
+    ResponseStatus status = 1;
+}
+
+message PeekMessageRequest {
+    //Consumer consumer = 1;
+    MessageInfo info = 1;
+}
+
+message GetConsumerOffsetResponse {
+    MessageInfo info = 1;
+    map<string, ResponseStatus> responses = 2;
+}
