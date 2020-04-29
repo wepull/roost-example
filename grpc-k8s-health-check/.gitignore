@@ -1,5 +1,0 @@
-#gitignore - Specifies intentionally untracked files to ignore.
-.vscode
-.DS_Store
-./client-grpc/client-grpc
-./server-grpc/server-grpc
