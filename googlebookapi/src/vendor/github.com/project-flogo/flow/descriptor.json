@@ -1,0 +1,17 @@
+{
+  "name": "flow",
+  "type": "flogo:action",
+  "version": "0.0.1",
+  "title": "Simple Flow",
+  "description": "Simple Flow Action",
+  "homepage": "https://github.com/project-flogo/flow",
+  "async": true,
+  "passthru":true,
+  "settings":[
+    {
+      "name": "flowURI",
+      "type": "string",
+      "required": true
+    }
+  ]
+}
