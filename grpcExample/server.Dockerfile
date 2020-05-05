@@ -1,5 +1,5 @@
 FROM golang:1.12-alpine as builder
-ENV PROJECT github.com/roost-io/roost-example/grpc-k8s-health-check
+ENV PROJECT github.com/roost-io/roost-example/grpcExample
 WORKDIR /go/src/$PROJECT
 COPY . .
 WORKDIR /go/src/$PROJECT/server-grpc/

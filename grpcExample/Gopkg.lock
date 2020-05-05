@@ -2,13 +2,11 @@
 
 
 [[projects]]
-  digest = "1:2e7cf22a849a287f4ce1129785591fc0dff7bf2fdeeb072a27375d73b68bb18a"
+  digest = "1:2d24d42c2c9d016962cf681570fb9dfc903640f3a9cdfbee32bf4a09a629a6a0"
   name = "github.com/ZB-io/zbio"
   packages = [
-    ".",
     "client",
     "client/config",
-    "config",
     "log",
     "rpc/common",
     "rpc/service",
@@ -30,7 +28,7 @@
   version = "v0.13.0"
 
 [[projects]]
-  digest = "1:e990969aa1e50a90b32339bde4ba5bea3f81e8da8c15f20f62786c4dfb8ae45b"
+  digest = "1:ab78c0fb8f622d9634a9acf9e6d919f3f463a352aca4652604627fe9564a3db2"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -42,8 +40,8 @@
     "ptypes/timestamp",
   ]
   pruneopts = "UT"
-  revision = "1b794fe86dd6a0c7c52ae69b5c9cb0aeedc52afa"
-  version = "v1.4.0"
+  revision = "6c66de79d66478d166c7ea05f5d2ccaf016fbd6b"
+  version = "v1.4.1"
 
 [[projects]]
   digest = "1:0e147d206ca6e979f30f99d11dfe85d427962ac9642a2da026cd9dd3926454d3"
@@ -142,7 +140,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:047ab7748a588b6e99382ca5f0a9be6707033bcf12ad9a556a46a10b689ab940"
+  digest = "1:81282d5d15c0b6102193c63269cb16c9a65b7fbd24bc6586ed26e5c6f309312c"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -154,7 +152,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "ff2c4b7c35a07b0c1e90ce72aa7bfe41bb66a3cb"
+  revision = "1ed23360d12c354a52f93c8dacc79ddd46516428"
 
 [[projects]]
   branch = "master"
@@ -166,11 +164,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f88172369bcdae548777d8f2c59b11561f7e41686f426c583a7abaeec6978cc7"
+  digest = "1:8cab10971112233c82c83683a517378038eba1c20e71b29c592b73fa212437b3"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "internal/unsafeheader",
+    "unix",
+  ]
   pruneopts = "UT"
-  revision = "1957bb5e6d1f523308b49060df02171d06ddfc77"
+  revision = "bc7a7d42d5c30f4d0fe808715c002826ce2c624e"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -202,8 +203,8 @@
   name = "google.golang.org/api"
   packages = ["support/bundler"]
   pruneopts = "UT"
-  revision = "e50386d957b9722c99d7de922c42d9226a39e82e"
-  version = "v0.22.0"
+  revision = "14f6709d501ea0b1be187c0b14437aa38bee7619"
+  version = "v0.23.0"
 
 [[projects]]
   branch = "master"
@@ -211,7 +212,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "bca184e23272c97429f0cb78a825f71ede0635fc"
+  revision = "b979b6f78d84775ef7a93ffc8034924947960f29"
 
 [[projects]]
   digest = "1:cb06f8927e8616210275f62acfed5eb5e2aa5fbe647d6909d76be74cdcc1d448"
@@ -265,7 +266,7 @@
   version = "v1.29.1"
 
 [[projects]]
-  digest = "1:e98a83a6464ab71657c759d986a8a1dd9757885bc6c0e4167dffa9f5233c97cf"
+  digest = "1:6b9c3c1dd8e43f4f445f19b0b9cd11bb375589da399897338439112545fef6e9"
   name = "google.golang.org/protobuf"
   packages = [
     "encoding/prototext",
@@ -302,8 +303,8 @@
     "types/known/timestamppb",
   ]
   pruneopts = "UT"
-  revision = "3b9eee12916ce611400f93d6c2fed2fc2911b0ad"
-  version = "v1.21.0"
+  revision = "8b0d71ac935315b10385aaaf30175de0c74bbba6"
+  version = "v1.22.0"
 
 [[projects]]
   digest = "1:c805e517269b0ba4c21ded5836019ed7d16953d4026cb7d00041d039c7906be9"
@@ -317,10 +318,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/ZB-io/zbio",
     "github.com/ZB-io/zbio/client",
     "github.com/golang/protobuf/proto",
-    "golang.org/x/net/context",
     "google.golang.org/grpc",
     "google.golang.org/grpc/codes",
     "google.golang.org/grpc/health/grpc_health_v1",

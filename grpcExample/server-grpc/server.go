@@ -19,10 +19,10 @@ import (
 	"log"
 	"net"
 
-	"github.com/roost-io/roost-example/grpc-k8s-health-check/api"
+	"github.com/roost-io/roost-example/grpcExample/api"
 
 	zb "github.com/ZB-io/zbio/client"
-	zbutil "github.com/roost-io/roost-example/grpc-k8s-health-check/message"
+	zbutil "github.com/roost-io/roost-example/grpcExample/message"
 
 	"context"
 	"strings"
