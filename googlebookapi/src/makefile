@@ -3,7 +3,7 @@ APP=googlebookapi
 .PHONY: all
 all: 
 	export GOPRIVATE="github.com/ZB-io/*"
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/${APP}
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build -o bin/${APP}
 ifdef NODOCKER
 	echo "DO NOT BUILD IMAGE"
 else 
