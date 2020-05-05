@@ -3,7 +3,7 @@ ENV PROJECT github.com/roost-io/roost-example/grpc-k8s-health-check
 WORKDIR /go/src/$PROJECT
 COPY . .
 WORKDIR /go/src/$PROJECT/server-grpc/
-RUN go build -gcflags='-N -l' -o /app
+RUN GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o /app
 
 FROM alpine:3.9
 # Get dependencies

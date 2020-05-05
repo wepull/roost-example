@@ -15,7 +15,7 @@ ENV PROJECT github.com/roost-io/roost-example/grpc-k8s-health-check
 WORKDIR /go/src/$PROJECT
 COPY . .
 WORKDIR /go/src/$PROJECT/client-grpc/
-RUN go build -gcflags='-N -l' -o /app
+RUN GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o /app
 # Make the dockerfile more optimized by using multistage dockerbuild which we copy the binary from the BUILD_STAGE container to the final container.
 # The second FROM instruction starts a new build stage with the alpine image as its base.
 FROM alpine:3.9
