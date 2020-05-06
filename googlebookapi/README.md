@@ -30,6 +30,9 @@ make
 
 # Deploy application in Kubernetes
 make deploy
+
+# Build app, dockerise app and deploy in kubernetes
+make release
 ```
 
 ### Cleaning
