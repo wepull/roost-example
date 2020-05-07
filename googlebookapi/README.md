@@ -5,9 +5,14 @@ ZBIO Topic `googleBookAPI` would be created in zbio and messages are sent to tho
 
 ## Commands to build and deploy Googlebookapi app in k8s cluster
 
-## How to deploy from roost desktop into roost cluster
+## How to build the project first time
 
-Pre-built images exist into the roost cluster
+```Open RKT Konsole
+cd googlebookapi
+make
+```
+
+## How to deploy from roost desktop into ZKE cluster
 
 ```bash
 kubectl apply -f googlebookapi/src/googlebookapi.yaml
@@ -39,7 +44,6 @@ make release
 
 ```bash
 # Deletes googlebookapi binaries
-# Delete deployed application from Kubernetes
 make clean
 ```
 
