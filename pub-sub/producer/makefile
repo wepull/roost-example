@@ -8,6 +8,7 @@ build:
 .PHONY: docker
 docker:
 	docker build -t zbio-example/${APP}:${APP_VERSION} .
+	../../push_image.sh zbio-example/${APP}:${APP_VERSION}
 
 clean:
 	rm -f bin/${APP}

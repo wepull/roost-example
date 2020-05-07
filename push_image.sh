@@ -8,7 +8,7 @@
      echo "Skip loading image to ZKE"
  else
  docker save $IMAGE > $IMAGE_TAR
- kubectl get nodes -o name | sed -e 's#node/##g' | grep -v master | while read node;
+ for node in `kubectl get nodes -o name | sed -e 's#node/##g' | grep -v master` # | while read node;
  do
     echo "scp $SSHOPTS $IMAGE_TAR $USER@$node:/tmp"
     scp $SSHOPTS $IMAGE_TAR $USER@$node:/tmp
@@ -17,3 +17,4 @@
     ssh $SSHOPTS $USER@$node $cmd_to_execute
   done
  fi
+ rm -f $IMAGE_TAR

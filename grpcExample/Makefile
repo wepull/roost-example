@@ -10,6 +10,8 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 
+all: build-imgs deploy
+
 # Ensures a dependency is safely vendored in the project
 deps:
 	dep ensure
@@ -47,10 +49,12 @@ clean-all: clean-server clean-client
 # Build a docker image for server
 build-server-img:
 	docker build -t serverimg -f server.Dockerfile .	
+	../push_image.sh serverimg
 
 # Build a docker image for client
 build-client-img:
 	docker build -t clientimg -f client.Dockerfile .
+	../push_image.sh clientimg
 
 # Builds both client and server images
 build-imgs: build-server-img build-client-img
