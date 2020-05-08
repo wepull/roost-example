@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: serverimg
+        image: serverimg:v1
         env:
         - name: SERVICE_ADDRESS
           value: zbio-service.zbio:50002
@@ -49,7 +49,7 @@ spec:
           # The periodSeconds field specifies that the kubelet should perform a readiness probe every X seconds. 
           periodSeconds: 1
       - name: client
-        image: clientimg
+        image: clientimg:v1
         env:
         - name: SERVICE_ADDRESS
           value: zbio-service.zbio:50002

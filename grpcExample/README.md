@@ -224,15 +224,18 @@ readinessProbe:
 
 For the liveness probe, similarly we can use the gRPC health probe `/bin/grpc_health_probe`, or a command such as `cat /tmp/healthy` that if executes successflully it returns 0 and the container is considered alive.
 
-## How to deploy application
+## How to deploy application into ZKE Cluster
 
 Open a terminal window, and `$ cd` into your project directory.
 
 Build the server and client images:
 
 ```bash
-# Prebuild image exists in roost cluster. Not necessary to build unless code changed.
-make build-imgs
+# Build, dockerise and deploy into ZKE cluster
+make
+
+# Undeploy applicaiton from cluster
+make clean
 ```
 
 Apply the configuration in `kubernetes/deploy.yaml` to a pod and deploy to Kubernetes.

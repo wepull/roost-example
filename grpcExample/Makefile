@@ -10,16 +10,36 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 
+CLIENT_IMG=clientimg
+SERVER_IMG=serverimg
+IMAGE_TAG=v1
+
+.PHONY: all
+all: clean dockerise deploy
+
+.PHONY: dockerise
+dockerise:
+ifeq ($(HOSTNAME), roost-utility)
+	@docker ps >/dev/null 2>&1 && docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
+	@sh ${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
+	@docker ps >/dev/null 2>&1 && docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
+	@sh ${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
+else
+	@docker build -f client.Dockerfile -t ${CLIENT_IMG}:${IMAGE_TAG} .
+	@docker build -f server.Dockerfile -t ${SERVER_IMG}:${IMAGE_TAG} .
+endif
+
+.PHONY: deploy
+deploy:
+	kubectl apply -f kubernetes/deploy.yaml
+
 # Ensures a dependency is safely vendored in the project
 deps:
 	dep ensure
 
-# Deploy to kubernetes
-deploy: 
-	kubectl apply -f kubernetes/deploy.yaml
-
+.PHONY: clean
 clean:
-	kubectl delete -f kubernetes/deploy.yaml
+	kubectl delete -f kubernetes/deploy.yaml || true
 
 # Delete deployment and images
 clean-minikube:
