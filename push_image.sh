@@ -1,5 +1,5 @@
 #!/bin/bash
- . ~/.roost_user_env
+ USER_HOME=$(egrep "^USER_HOME" ~/.roost_user_env | awk -F'=' '{print $2}')
  SSHOPTS="-i $USER_HOME/.ssh/roost_id_rsa -o ConnectTimeout=5 -o LogLevel=ERROR -o StrictHostKeyChecking=false -o UserKnownHostsFile=/dev/null"
  IMAGE=$1
  IMAGE_TAR="$$.tar"
