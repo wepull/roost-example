@@ -88,10 +88,15 @@ We offer the following installation methods:
    option, you will use pre-built container images that are available publicly,
    instead of building them yourself, which takes a long time).
 
-### Option 1: Running in Roost Cluster [Prebuild images in roost cluster]
+### Option 1: Running in Roost to deploy in ZKE cluster
 
 ```shell
-   skaffold run
+   # Build, Dockerise and deploys application into ZKE cluster
+   # Application should be accessible over http://roost-master:30046
+   make
+
+   # Undeploy application from cluster
+   make clean
 ```
 
 ### Option 2: Running locally
@@ -134,7 +139,7 @@ We offer the following installation methods:
    automatically as you refactor the code, run `skaffold dev` command.
 
 1. Run `kubectl get pods` to verify the Pods are ready and running. The
-   application frontend should be available at http://localhost:80 on your
+   application frontend should be available at http://roost-master:30046 (if deployed in ZKE cluster via Roost) or http://localhost:80 on your
    machine.
 
 ### Option 3: Running on Google Kubernetes Engine (GKE)
