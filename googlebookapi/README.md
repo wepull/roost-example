@@ -12,15 +12,9 @@ cd googlebookapi
 make
 ```
 
-## How to deploy from roost desktop into ZKE cluster
-
-```bash
-kubectl apply -f googlebookapi/src/googlebookapi.yaml
-```
-
 ### How to access GoogleBookAPI application
 
-* Open http://localhost:9999/books/9788126568772 
+* Open http://localhost:9999/books/9788126568772 or http://roost-master:30045/books/9788126568772
   * isbn_number: `9788126568772` ; URL: http://localhost:9999/books/<isbn_number>
 * ISBN stands for international standard book number , which is
     13 digit number uniquely identify all the books.
@@ -29,21 +23,11 @@ kubectl apply -f googlebookapi/src/googlebookapi.yaml
 
 ```bash
 
-# Build the googlebookapi application and dockerise;
+# Build the googlebookapi application, dockerise and deploys into ZKE cluster;
 # Generate image name: zbio-example/googlebookapi:v1
 make
 
-# Deploy application in Kubernetes
-make deploy
-
-# Build app, dockerise app and deploy in kubernetes
-make release
-```
-
-### Cleaning
-
-```bash
-# Deletes googlebookapi binaries
+# Deletes googlebookapi binaries and undeploy from ZKE
 make clean
 ```
 

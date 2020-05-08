@@ -1,12 +1,12 @@
 APP ?= googlebookapi
 IMAGE_VERSION ?= v1
-REGISTRY ?= localhost:5000
-#IMAGE ?= ${REGISTRY}/zbio-example/${APP}:${IMAGE_VERSION}
 IMAGE ?= zbio-example/${APP}:${IMAGE_VERSION}
 GOOGLEBOOKAPI=$(cd -P -- "$(/usr/bin/dirname -- "$0")" && pwd -P)
+HOSTNAME=$(shell hostname)
 
 .PHONY: all
 all: clean build dockerise deploy
+all: test
 
 .PHONY: build
 build:	
@@ -15,23 +15,25 @@ build:
 
 .PHONY: deploy
 deploy:
-	kubectl delete -f src/googlebookapi.yaml --now
 	kubectl apply -f src/googlebookapi.yaml
 
 .PHONY: clean
 clean:
 	rm -f src/googlebookapi
+	kubectl delete -f src/googlebookapi.yaml --now || true
 
 .PHONY: dockerise
 dockerise:
-	/usr/local/bin/docker ps >/dev/null 2>&1 && docker build -f Dockerfile -t ${IMAGE} src
-	${PUB_SUB_SRC}/../../push_image.sh "${IMAGE}"
+ifeq ($(HOSTNAME), roost-utility)
+	@docker ps >/dev/null 2>&1 && docker build -f src/Dockerfile -t ${IMAGE} src
+	@sh ${shell pwd}/../push_image.sh "${IMAGE}"
+else
+	@docker build -f src/Dockerfile -t ${IMAGE} src
+endif
 
-.PHONY: release
-release: 
-	$(MAKE) build
-	$(MAKE) dockerise
-	$(MAKE) deploy
-	
+.PHONY: test
+test:
+	@sh ${shell pwd}/../push_image.sh "${IMAGE}"
+
 	
 		

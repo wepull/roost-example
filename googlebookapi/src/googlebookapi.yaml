@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: bookapi
-    image: roost-utility:5000/zbio-example/googlebookapi:v1
+    image: zbio-example/googlebookapi:v1
     ports:
       - containerPort: 9999
     env:
@@ -32,10 +32,11 @@ metadata:
   labels:
     app: zbio-sample-googlebookapi
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: zbio-sample-googlebookapi
   ports:
   - name: tcp
     port: 9999
     targetPort: 9999
+    nodePort: 30045
