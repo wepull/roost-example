@@ -66,11 +66,13 @@ clean-all: clean-server clean-client
 # We use the -f flag with docker build to point to a Dockerfile anywhere in the file system
 # Build a docker image for server
 build-server-img:
-	docker build -t serverimg -f server.Dockerfile .	
+	docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
+	../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
 
 # Build a docker image for client
 build-client-img:
-	docker build -t clientimg -f client.Dockerfile .
+	docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
+	../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
 
 # Builds both client and server images
 build-imgs: build-server-img build-client-img

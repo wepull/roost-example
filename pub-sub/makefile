@@ -1,9 +1,6 @@
 SUBDIRS = producer consumer
 
-all:
-	make build
-	make docker
-	make deploy
+all: clean build docker deploy
 
 build:
 	for d in $(SUBDIRS); do echo "<==> Target: $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
