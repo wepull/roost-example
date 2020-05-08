@@ -10,15 +10,7 @@
 # or implied. See the License for the specific language governing permissions and limitations under
 # the License.
 
-FROM golang:1.12-alpine as builder
-ENV PROJECT github.com/roost-io/roost-example/grpcExample
-WORKDIR /go/src/$PROJECT
-COPY . .
-WORKDIR /go/src/$PROJECT/client-grpc/
-RUN GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o /app
-# Make the dockerfile more optimized by using multistage dockerbuild which we copy the binary from the BUILD_STAGE container to the final container.
-# The second FROM instruction starts a new build stage with the alpine image as its base.
 FROM alpine:3.9
-COPY --from=builder /app /app
-# The ENTRYPOINT of an image specifies what executable to run when the container starts.
-ENTRYPOINT ["/app"]
+COPY bin/grpc-server /app/grpc-client
+COPY grpc_health_probe-linux-amd64 /bin/grpc_health_probe
+ENTRYPOINT [ "/app/grpc-client" ]

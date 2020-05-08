@@ -10,6 +10,31 @@ gRPC has a standard health checking protocol that can be used from any language.
 
 The next sections provide explanations of each part of the application.
 
+## How to deploy application into ZKE Cluster
+
+Open a RKT Konsole, and `$ cd` into your project directory.
+
+Build the server and client images:
+
+```bash
+# Build, dockerise and deploy into ZKE cluster
+make
+
+# Delete binaries and undeploy applicaiton from cluster
+make clean
+```
+
+## View logs of running application
+
+Application is integrated with zbio to send messages into zbio topic from grpc-client and grpc-server side. ZBIO service endpoint is provided as container's ```ENV['SERVICE_ADDRESS']``` added in ```kubernetes/deploy.yaml```
+
+```bash
+kubectl logs grpc-deploy-8f95984fd-qm2xd  -c client
+kubectl logs grpc-deploy-8f95984fd-qm2xd  -c server
+
+kubectl logss service/zbio-service --namespace zbio
+```
+
 ## api
 
 The server should export a service defined in the following proto for the health check. 
@@ -55,32 +80,6 @@ message OutputResponse{
   string text = 1;
   string serverName =2;
 }
-```
-
-### Makefile for api
-
-The Makefile for the api helps you to install the necessary plugins and compile your __.proto__ file.
-
-#### Usage
-
-To start, make sure that the __$PATH__ and __$GOPATH__ is set up proparly.
-
-`make dep` runs the following command which installs the Go protocol buffers plugin:
-
-```bash
-go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
-```
-
-`make generate-proto` runs the following command which compiles __api.proto__:
-
-```bash
-protoc -I . api.proto --go_out=plugins=grpc:.
-```
-
-`make generate-proto-in-docker` is useful if you have difficulties using the previous command to compile your __api.proto__ file. This command generates the __api.pb.go__ inside a docker image and then returns the file and removes the docker. 
-
-```bash
-docker run --rm -v $(CURDIR):$(CURDIR) -w $(CURDIR) znly/protoc -I . api.proto --go_out=plugins=grpc:.
 ```
 
 ## server-grpc
@@ -144,7 +143,14 @@ In the __startGrpcServer__ function, the following steps were taken to build and
 
 ## server.Dockerfile
 
-To use the gRPC standard health checking protocol, we need to include the compiled `grpc_health_probe` in the container image of the server. To do this, we have used the following commands in the __server.Dockerfile__:
+To use the gRPC standard health checking protocol, we need to include the compiled `grpc_health_probe` in the container image of the server.
+
+```Dockerfile
+# Use already downloaded grpc_health_probe
+COPY grpc_health_probe-linux-amd64 /bin/grpc_health_probe
+```
+
+OR
 
 ```Dockerfile
 RUN GRPC_HEALTH_PROBE_VERSION=v0.3.0 && \
@@ -169,7 +175,7 @@ ipPtr := flag.String("ip", "127.0.0.1:3000", "Description: ip address")
 
 In __main.go__ a client has been created for the __ProcessText__ service: 
 
-```go 
+```go
 client :=api.NewProcessTextClient(conn)
 ```
 
@@ -224,26 +230,6 @@ readinessProbe:
 
 For the liveness probe, similarly we can use the gRPC health probe `/bin/grpc_health_probe`, or a command such as `cat /tmp/healthy` that if executes successflully it returns 0 and the container is considered alive.
 
-## How to deploy application into ZKE Cluster
-
-Open a terminal window, and `$ cd` into your project directory.
-
-Build the server and client images:
-
-```bash
-# Build, dockerise and deploy into ZKE cluster
-make
-
-# Undeploy applicaiton from cluster
-make clean
-```
-
-Apply the configuration in `kubernetes/deploy.yaml` to a pod and deploy to Kubernetes.
-
-```bash
-make deploy
-```
-
 Now you can use `kubectl get pods` to get a list of the pods and find the exact name of the pod which should start with __grpc-deploy__.
 
 You can retrieve more information about each pod using `kubectl describe pod`. For example:
@@ -259,28 +245,8 @@ If you check the Readiness status of the server using `kubectl describe pod` bef
 To see the messages that are sent and received between client and server, you can use the following commands to print the logs of the client and server containers:
 
 ```bash
-kubectl log grpc-deploy-8f95984fd-qm2xd  -c client
-kubectl log grpc-deploy-8f95984fd-qm2xd  -c server
-```
-
-Finally, to delete the deployment, simply use:
-
-```bash
-kubectl delete deploy grpc-deploy
-```
-
-## Integration with ZBIO
-
-Application is integrated with zbio to send messages into zbio topic from grpc-client and grpc-server side. ZBIO service endpoint is provided as container's ```ENV['SERVICE_ADDRESS']``` added in ```kubernetes/deploy.yaml```
-
-```bash
-kubectl log grpc-deploy-8f95984fd-qm2xd  -c client
-kubectl log grpc-deploy-8f95984fd-qm2xd  -c server
-
-kubectl logs service/zbio-service --namespace zbio
-
-# Undeploy applications from kubernetes
-make clean
+kubectl logs grpc-deploy-8f95984fd-qm2xd  -c client
+kubectl logs grpc-deploy-8f95984fd-qm2xd  -c server
 ```
 
 ## References

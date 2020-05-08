@@ -14,8 +14,26 @@ CLIENT_IMG=clientimg
 SERVER_IMG=serverimg
 IMAGE_TAG=v1
 
+GRPC_HEALTH_PROBE=grpc_health_probe-linux-amd64
+GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
+
 .PHONY: all
-all: clean dockerise deploy
+all: clean prerequisites build dockerise deploy
+
+.PHONY: prerequisites
+prerequisites:
+	cp -f ${GRPC_HEALTH_PROBE_PATH} . 
+
+.PHONY: build
+build: build-server build-client
+
+.PHONY: build-server
+build-server:
+	cd server-grpc && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o ../bin/grpc-server && cd -
+
+.PHONY: build-client
+build-client:
+	cd client-grpc && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o ../bin/grpc-client && cd -
 
 .PHONY: dockerise
 dockerise:
@@ -33,63 +51,11 @@ endif
 deploy:
 	kubectl apply -f kubernetes/deploy.yaml
 
-# Ensures a dependency is safely vendored in the project
-deps:
-	dep ensure
-
 .PHONY: clean
-clean:
+clean: clean_bin
 	kubectl delete -f kubernetes/deploy.yaml || true
 
-# Delete deployment and images
-clean-minikube:
-	kubectl delete deploy grpc-deploy || true
-	docker rmi -f serverimg || true
-	docker rmi -f clientimg || true
-
-# Remove the server binary and container
-clean-server:
-	rm ./server-grpc/server-grpc || true
-	docker rm myserver 
-
-# Remove the client binary and container
-clean-client:
-	rm ./client-grpc/client-grpc || true
-	docker rm myclient 
-
-# Remove binaries for server and client and stop and remove all the running containers	
-clean-all: clean-server clean-client
-	docker stop $(docker ps -a -q) || true
-	docker rm $(docker ps -a -q)
-
-# docker build -f, --file string Name of the Dockerfile (Default is 'PATH/Dockerfile')
-# We use the -f flag with docker build to point to a Dockerfile anywhere in the file system
-# Build a docker image for server
-build-server-img:
-	docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
-	../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
-
-# Build a docker image for client
-build-client-img:
-	docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
-	../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
-
-# Builds both client and server images
-build-imgs: build-server-img build-client-img
-
-# Run client container	
-# Example usage: make n=123 run-client
-run-client:
-	docker run --name myclient${n} -it --network="host" clientimg
-
-# Run server container	
-run-server:
-	docker run --name myserver -p3000:3000 serverimg
-
-# ---------------------------------------------- #
-# additional useful commands					 #
-# ---------------------------------------------- #
-## to delete a docker image use this command:
-## docker rmi -f NAMEOFIMAGE
-## to see list of images:  
-## docker images 
+.PHONY: clean_bin
+clean_bin:
+	rm -f ${GRPC_HEALTH_PROBE}
+	rm -f bin/*
