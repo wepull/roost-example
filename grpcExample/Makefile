@@ -17,8 +17,10 @@ IMAGE_TAG=v1
 GRPC_HEALTH_PROBE=grpc_health_probe-linux-amd64
 GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 
+HOSTNAME := $(shell hostname -f)
+
 .PHONY: all
-all: clean prerequisites build dockerise deploy
+all: clean prerequisites build dockerise deploy clean_bin
 
 .PHONY: prerequisites
 prerequisites:
@@ -33,15 +35,16 @@ build-server:
 
 .PHONY: build-client
 build-client:
-	cd client-grpc && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOFLAGS=-mod=vendor go build -gcflags='-N -l' -o ../bin/grpc-client && cd -
+	cd client-grpc && GOFLAGS=-mod=vendor CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ../bin/grpc-client && cd -
 
 .PHONY: dockerise
 dockerise:
 ifeq ($(HOSTNAME), roost-utility)
+	@echo "Build and push to ZKE cluster nodes"
 	@docker ps >/dev/null 2>&1 && docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
-	@sh ${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
+	${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
 	@docker ps >/dev/null 2>&1 && docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
-	@sh ${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
+	${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
 else
 	@docker build -f client.Dockerfile -t ${CLIENT_IMG}:${IMAGE_TAG} .
 	@docker build -f server.Dockerfile -t ${SERVER_IMG}:${IMAGE_TAG} .
