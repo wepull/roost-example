@@ -21,7 +21,7 @@ def init_tracer(service):
     return config.initialize_tracer()
 
 def booking_mgr(movie):
-    with tracer.start_span('booking') as span:
+    with tracer.start_span('BookingMovie[{}]'.format(movie)) as span:
         span.set_tag('Movie', movie)
         with span_in_context(span):
             cinema_details = check_cinema(movie)
@@ -65,8 +65,8 @@ def book_show(showtime_details):
             print(Ticket_details)
 
 assert len(sys.argv) == 2
-tracer = init_tracer('booking')
 movie = sys.argv[1]
+tracer = init_tracer('BookingMovie[{}]'.format(movie))
 booking_mgr(movie)
 # yield to IOLoop to flush the spans
 time.sleep(2)
