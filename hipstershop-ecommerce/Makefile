@@ -45,7 +45,7 @@ dockerise:
 ifeq ($(HOSTNAME), roost-utility)
 	for service in ${MICROSERVICES}; do \
 		docker ps >/dev/null 2>&1 && docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
-		sh ${shell pwd}/../push_image.sh "$${service}:${IMAGE_TAG}" ; \
+		${shell pwd}/../push_image.sh "$${service}:${IMAGE_TAG}" ; \
 	done
 else
 	for service in ${MICROSERVICES}; do \
