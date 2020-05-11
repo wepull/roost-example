@@ -1,6 +1,7 @@
 APP=producer
 APP_VERSION=v1
-IMAGE=${APP}:${APP_VERSION}
+IMAGE="zbio-example/${APP}:${APP_VERSION}"
+HOSTNAME := $(shell hostname)
 
 build:
 	export GOPRIVATE="github.com/ZB-io/*"
