@@ -15,5 +15,5 @@ deploy:
 	
 clean:
 	for d in $(SUBDIRS); do echo "<==> Target: $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
-	kubectl delete -f kubernetes-manifests/consumer.yaml --now
-	kubectl delete -f kubernetes-manifests/producer.yaml --now
+	kubectl delete -f kubernetes-manifests/consumer.yaml --now || true
+	kubectl delete -f kubernetes-manifests/producer.yaml --now || true

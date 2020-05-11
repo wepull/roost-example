@@ -10,7 +10,7 @@ build:
 docker:
 ifeq ($(HOSTNAME), roost-utility)
 	docker ps >/dev/null 2>&1 && docker build -t zbio-example/${IMAGE} .
-	@sh ${shell pwd}/../../push_image.sh "${IMAGE}"
+	${shell pwd}/../../push_image.sh "${IMAGE}"
 else
 	docker build -t zbio-example/${IMAGE} .
 endif

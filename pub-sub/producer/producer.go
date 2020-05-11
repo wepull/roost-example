@@ -59,7 +59,7 @@ func sendNewMessage() {
 	}
 
 	// Send 1000 messages
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 9999; i++ {
 		messages[0].Data = []byte(fmt.Sprintf("Message number %d ", i))
 		messages[1].Data = []byte(fmt.Sprintf("Topic Message count %d ", i))
 
