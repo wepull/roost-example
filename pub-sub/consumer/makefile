@@ -1,6 +1,7 @@
 APP=consumer
 APP_VERSION=v1
-IMAGE=${APP}:${APP_VERSION}
+IMAGE="zbio-example/${APP}:${APP_VERSION}"
+HOSTNAME := $(shell hostname)
 
 build:
 	export GOPRIVATE="github.com/ZB-io/*"
@@ -9,10 +10,10 @@ build:
 .PHONY: docker
 docker:
 ifeq ($(HOSTNAME), roost-utility)
-	@docker ps >/dev/null 2>&1 && docker build -t zbio-example/${IMAGE} .
-	@sh ${shell pwd}/../../push_image.sh "${IMAGE}"
+	@docker ps >/dev/null 2>&1 && docker build -t ${IMAGE} .
+	${shell pwd}/../../push_image.sh "${IMAGE}"
 else
-	docker build -t zbio-example/${IMAGE} .
+	docker build -t ${IMAGE} .
 endif
 
 clean:

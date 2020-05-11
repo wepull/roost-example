@@ -15,6 +15,8 @@ IMAGE_TAG=v1
 GRPC_HEALTH_PROBE=grpc_health_probe-linux-amd64
 GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 
+HOSTNAME := $(shell hostname -f)
+
 MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${PRODUCT_CATALOG_SERVICE_IMG} \
 				${RECOMMENDATION_SERVICE_IMG}	\
@@ -28,12 +30,12 @@ MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${ADDSERVICE_IMG}
 
 .PHONY: all
-all: clean prerequisites dockerise deploy
+all: clean prerequisites dockerise deploy clean_bin
 
 .PHONY: prerequisites
 prerequisites:
 	for service in ${MICROSERVICES}; do \
-		if [[ $${service} != ${FRONTEND_IMG} && $${service} != ${LOAD_GENERATOR_IMG} ]]; then \
+		if ( [ $${service} != ${FRONTEND_IMG} ] && [ $${service} != ${LOAD_GENERATOR_IMG} ] ); then \
 			cp ${GRPC_HEALTH_PROBE_PATH} src/$${service}; \
 		fi; \
 	done
@@ -62,9 +64,8 @@ clean: clean_bin
 
 .SILENT:
 clean_bin:
-	@set -x
 	for service in ${MICROSERVICES}; do \
-		if [[ -f "src/$${service}/${GRPC_HEALTH_PROBE}" ]]; then \
+		if [ -f "src/$${service}/${GRPC_HEALTH_PROBE}" ]; then \
 			rm -f src/$${service}/${GRPC_HEALTH_PROBE}; \
 		fi; \
 	done
