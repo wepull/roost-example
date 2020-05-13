@@ -1,6 +1,6 @@
 # github.com/BurntSushi/toml v0.3.1
 github.com/BurntSushi/toml
-# github.com/ZB-io/zbio v0.0.5
+# github.com/ZB-io/zbio v0.0.6
 github.com/ZB-io/zbio/client
 github.com/ZB-io/zbio/client/config
 github.com/ZB-io/zbio/log

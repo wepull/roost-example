@@ -5,3 +5,4 @@ echo "Calling ZBClient"
 export SERVER_CRT=/zbclient/security/cert/server.crt && ./client.test -test.run CreateDuplicateTopics
 #export SERVER_CRT=/zbclient/security/cert/server.crt && ./client.test -test.run CreateSingleTopic -test.count 1000
 export SERVER_CRT=/zbclient/security/cert/server.crt && ./client.test -test.run NewMessage -test.count 1000
+

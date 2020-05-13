@@ -14,7 +14,7 @@ import (
 // InitTrace sets OpenTelemetry STDOUT && Jaeger exporter with SDKTrace provider
 func InitTrace() {
 	// Stdout Exporter
-	_, err := stdout.NewExporter(stdout.Options{PrettyPrint: true})
+	stdoutExporter, err := stdout.NewExporter(stdout.Options{PrettyPrint: true})
 	if err != nil {
 		log.Fatalf("Error encountered aquiring exporter: %v", err)
 	}
@@ -30,13 +30,17 @@ func InitTrace() {
 			},
 		}),
 	)
+	// Not using following exporters
+	var _ = stdoutExporter
+	var _ = jaegerExporter
+
 	if err != nil {
 		log.Fatalf("Error encountered acquiring Jaeger Exporter: %v", err)
 	}
 	tp, err := sdktrace.NewProvider(
 		sdktrace.WithConfig(sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
-		// sdktrace.WithSyncer(exporter),
-		sdktrace.WithSyncer(jaegerExporter),
+		// sdktrace.WithSyncer(stdoutExporter),
+		// sdktrace.WithSyncer(jaegerExporter),
 	)
 	if err != nil {
 		log.Fatalf("Error encountered setting sdktrace provider: %v", err)
