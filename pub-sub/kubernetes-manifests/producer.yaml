@@ -6,7 +6,7 @@ metadata:
     app: zbio-sample-producer
 spec:
   containers:
-  - name: zbio
+  - name: producer
     image: zbio-example/producer:v1
     env:
     - name: SERVICE_ADDRESS

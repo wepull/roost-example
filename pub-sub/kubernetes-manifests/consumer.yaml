@@ -6,7 +6,7 @@ metadata:
     app: zbio-sample-consumer
 spec:
   containers:
-  - name: zbio
+  - name: consumer
     image: zbio-example/consumer:v1
     env:
     - name: SERVICE_ADDRESS
