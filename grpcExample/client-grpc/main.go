@@ -64,7 +64,7 @@ func main() {
 
 	message := zb.Message{
 		TopicName:     zbutil.TopicName, // default topicName
-		Data:          []byte(fmt.Sprintf("Application grpc-server starting. zbClientName: %s\n", randomClientName)),
+		Data:          []byte(fmt.Sprintf("grpc-client starting from grpcExample. zbClientName: %s\n", randomClientName)),
 		HintPartition: "",
 	}
 	zbutil.SendMessageToZBIO([]zb.Message{message})

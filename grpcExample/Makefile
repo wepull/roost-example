@@ -17,10 +17,11 @@ IMAGE_TAG=v1
 GRPC_HEALTH_PROBE=grpc_health_probe-linux-amd64
 GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 
-HOSTNAME := $(shell hostname -f)
+HOSTNAME := $(shell hostname)
 
 .PHONY: all
-all: clean prerequisites build dockerise deploy clean_bin
+all: clean prerequisites build dockerise
+	$(MAKE) clean_bin
 
 .PHONY: prerequisites
 prerequisites:
@@ -56,7 +57,7 @@ deploy:
 
 .PHONY: clean
 clean: clean_bin
-	kubectl delete -f kubernetes/deploy.yaml || true
+	kubectl delete -f kubernetes/deploy.yaml --now >/dev/null 2>&1 || true
 
 .PHONY: clean_bin
 clean_bin:
