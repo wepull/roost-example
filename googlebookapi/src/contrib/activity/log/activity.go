@@ -44,19 +44,6 @@ func (i *Input) ToMap() map[string]interface{} {
 
 func New(ctx activity.InitContext) (activity.Activity, error) {
 
-	/*s := &Settings{}
-	err := metadata.MapToStruct(ctx.Settings(), s, true)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx.Logger().Debugf("Setting: %s", s.ASetting)*/
-	/*if runtime.GOOS == "windows" {
-		cmd = exec.Command("tasklist")
-	}*/
-
-	//cmd := exec.Command("man ls")
-
 	act := &Activity{} //add aSetting to instance
 	initZBIO("")
 	return act, nil
@@ -162,7 +149,6 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 			ctx.ActivityHost().ID(), ctx.ActivityHost().Name(), ctx.Name())
 	}
 
-	fmt.Println("Hello Message")
 	initZBIO(msg)
 
 	if input.UsePrint {

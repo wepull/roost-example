@@ -5,6 +5,7 @@ HOSTNAME=$(shell hostname)
 
 .PHONY: all
 all: clean build dockerise deploy
+	$(MAKE) clean_bin
 
 .PHONY: build
 build:	
@@ -15,11 +16,6 @@ build:
 deploy:
 	kubectl apply -f src/googlebookapi.yaml
 
-.PHONY: clean
-clean:
-	rm -f src/googlebookapi
-	kubectl delete -f src/googlebookapi.yaml --now || true
-
 .PHONY: dockerise
 dockerise:
 ifeq ($(HOSTNAME), roost-utility)
@@ -27,5 +23,13 @@ ifeq ($(HOSTNAME), roost-utility)
 	${shell pwd}/../push_image.sh "${IMAGE}"
 else
 	@docker build -f src/Dockerfile -t ${IMAGE} src
+
+.PHONY: clean
+clean: clean_bin
+	kubectl delete -f src/googlebookapi.yaml --now >/dev/null 2>&1 || true
 endif
+
+.PHONY: clean_bin
+clean_bin:
+	rm -f googlebookapi
 		

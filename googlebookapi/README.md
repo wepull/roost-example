@@ -1,16 +1,36 @@
 # GoogleBookAPI Example
 
-Google book API application is build on top of [flogo](https://www.flogo.io/) application to demostrate zbio messaging in flow based application.
-ZBIO Topic `googleBookAPI` would be created in zbio and messages are sent to those topic whenever request is made to the application to retrieve google book details.
+Google book API application is build on top of [flogo](https://www.flogo.io/) application to demostrate use of zbio messaging platform in flow based application.
+GoogleBookAPI application is integrated with zbio to send messages and persist them. These persisted messages are retained in zbio topics till rention period of the Topic. Messages can be further consumed by other component of the application or another microservices running. 
 
-## Commands to build and deploy Googlebookapi app in k8s cluster
+In this `GoogleBookAPI` example, zbio is used as logging activity in the flow to send every useful information in the form of messages to zbio. These messages are stored in the topics till topic's retention period. When application launch for first time, GoogleBookAPI application creates `googleBookAPI` topic to store messages. Every time request is made by the application to retrieve google book details, new activity logs are sent as new messages to ZBIO messaging platform in `googleBookAPI` topic.
 
-## How to build the project first time
+## Let's run this application in RDE
 
-```Open RKT Konsole
-cd googlebookapi
+Launch Roost Desktop Engine (RDE). Once Zettabytes Cluster Engine (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+
+> Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
+
+```bash
+cd cd $GOPATH/src/github.com/roost-io/roost-example/googlebookapi
+
+# Build, dockerise and deploy into ZKE cluster
 make
+
+# View application logs (Use `Workload Analytics` available in RDE desktop to get better insights on deployed application)
+# -f :to keep streaming logs from application
+kubectl logs -f service/googlebookapi
+
+# zbio service logs
+kubectl logs service/zbio-service --namespace zbio
+
+# Deletes googlebookapi binaries and undeploy from ZKE
+make clean
 ```
+
+Open RDE desktop's Workload Analytics to view application pods, services and logs
+
+[RDE Workload Analytics image](show_GoogleBookAPI_pod_logs_and_workload_view)
 
 ### How to access GoogleBookAPI application
 
@@ -21,19 +41,9 @@ make
 * ISBN can be found in internet. **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
 * The digit should not have any special characters in between.
 
+## Cleaning (Always prefer to cleanup resources if not in use)
+
 ```bash
-
-# Build the googlebookapi application, dockerise and deploys into ZKE cluster;
-# Generate image name: zbio-example/googlebookapi:v1
-make
-
 # Deletes googlebookapi binaries and undeploy from ZKE
 make clean
-```
-
-### View logs
-
-```bash
-kubectl logs service/zbio-service --namespace zbio
-kubectl logs zbio-sample-googlebookapi
 ```
