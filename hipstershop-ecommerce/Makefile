@@ -30,7 +30,8 @@ MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${ADDSERVICE_IMG}
 
 .PHONY: all
-all: clean prerequisites dockerise deploy clean_bin
+all: clean prerequisites dockerise deploy
+	$(MAKE) clean_bin
 
 .PHONY: prerequisites
 prerequisites:
@@ -60,7 +61,7 @@ deploy:
 
 .PHONY: clean
 clean: clean_bin 
-	kubectl delete -f kubernetes-manifests/zke-deployment.yaml || true
+	kubectl delete -f kubernetes-manifests/zke-deployment.yaml --now >/dev/null 2>&1 || true
 
 .SILENT:
 clean_bin:
