@@ -46,7 +46,7 @@ prerequisites:
 .PHONY: dockerise
 dockerise:
 	for service in ${MICROSERVICES}; do \
-		docker ps >/dev/null 2>&1 && docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
+		docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
 	done
 
 .PHONY: deploy

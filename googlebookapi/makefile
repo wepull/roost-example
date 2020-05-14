@@ -18,10 +18,7 @@ deploy:
 
 .PHONY: dockerise
 dockerise:
-	/usr/bin/docker ps >/dev/null 2>&1 && docker build -f src/Dockerfile -t ${IMAGE} src
-	${shell pwd}/../push_image.sh "${IMAGE}"
-else
-	@docker build -f src/Dockerfile -t ${IMAGE} src
+	docker build -f src/Dockerfile -t ${IMAGE} src
 
 .PHONY: clean
 clean: clean_bin

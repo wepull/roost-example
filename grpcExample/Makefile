@@ -40,8 +40,8 @@ build-client:
 
 .PHONY: dockerise
 dockerise:
-	@docker ps >/dev/null 2>&1 && docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
-	@docker ps >/dev/null 2>&1 && docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
+	docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
+	docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
 
 .PHONY: deploy
 deploy:
