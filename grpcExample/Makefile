@@ -39,16 +39,8 @@ build-client:
 
 .PHONY: dockerise
 dockerise:
-ifeq ($(HOSTNAME), roost-utility)
-	@echo "Build and push to ZKE cluster nodes"
 	@docker ps >/dev/null 2>&1 && docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
-	${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
 	@docker ps >/dev/null 2>&1 && docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
-	${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
-else
-	@docker build -f client.Dockerfile -t ${CLIENT_IMG}:${IMAGE_TAG} .
-	@docker build -f server.Dockerfile -t ${SERVER_IMG}:${IMAGE_TAG} .
-endif
 
 .PHONY: deploy
 deploy:

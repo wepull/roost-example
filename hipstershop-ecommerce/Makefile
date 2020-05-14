@@ -42,17 +42,9 @@ prerequisites:
 
 .PHONY: dockerise
 dockerise:
-ifeq ($(HOSTNAME), roost-utility)
 	for service in ${MICROSERVICES}; do \
-		docker ps >/dev/null 2>&1 && docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
-		${shell pwd}/../push_image.sh "$${service}:${IMAGE_TAG}" ; \
+		docker ps >/dev/null 2>&1 && docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ;
 	done
-else
-	for service in ${MICROSERVICES}; do \
-		echo "Building $${service}"; \
-		docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
-	done
-endif
 
 .PHONY: deploy
 deploy:
