@@ -11,6 +11,6 @@
 # the License.
 
 FROM alpine:3.9
-COPY bin/grpc-server /app/grpc-client
+COPY bin/grpc-client /app/grpc-client
 COPY grpc_health_probe-linux-amd64 /bin/grpc_health_probe
 ENTRYPOINT [ "/app/grpc-client" ]
