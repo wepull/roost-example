@@ -367,7 +367,7 @@ func (cli *Client) CreateTopics(topicNames []string, brokerGroup string, p, r in
 	return true, nil
 }
 
-// NewMessage writes messages to the topic and returns "n" numbers of messages which are written.
+// NewMessage writes messages to the topic and returns map[topicName]StatusCode and error
 func (cli *Client) NewMessage(messages []Message) (map[string]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
 	defer cancel()
