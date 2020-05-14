@@ -17,6 +17,7 @@ GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 
 HOSTNAME := $(shell hostname -f)
 
+SUBDIRS = src
 MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${PRODUCT_CATALOG_SERVICE_IMG} \
 				${RECOMMENDATION_SERVICE_IMG}	\
@@ -40,20 +41,13 @@ prerequisites:
 			cp ${GRPC_HEALTH_PROBE_PATH} src/$${service}; \
 		fi; \
 	done
+	for d in $(SUBDIRS); do echo "<==> Target $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
 
 .PHONY: dockerise
 dockerise:
-ifeq ($(HOSTNAME), roost-utility)
 	for service in ${MICROSERVICES}; do \
 		docker ps >/dev/null 2>&1 && docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
-		${shell pwd}/../push_image.sh "$${service}:${IMAGE_TAG}" ; \
 	done
-else
-	for service in ${MICROSERVICES}; do \
-		echo "Building $${service}"; \
-		docker build -f src/$${service}/Dockerfile -t $${service}:${IMAGE_TAG} ./src/$${service} ; \
-	done
-endif
 
 .PHONY: deploy
 deploy:

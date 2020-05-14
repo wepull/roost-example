@@ -18,7 +18,6 @@ deploy:
 
 .PHONY: dockerise
 dockerise:
-ifeq ($(HOSTNAME), roost-utility)
 	/usr/bin/docker ps >/dev/null 2>&1 && docker build -f src/Dockerfile -t ${IMAGE} src
 	${shell pwd}/../push_image.sh "${IMAGE}"
 else
