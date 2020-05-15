@@ -9,9 +9,9 @@ build:
 .PHONY: docker
 docker:
 	docker build -t ${IMAGE} .
-	ifeq ($(HOSTNAME), roost-utility)
+ifeq ($(HOSTNAME), roost-utility)
 		${shell pwd}/../../push_image.sh "${IMAGE}"
-	endif
+endif
 
 clean:
 	rm -f bin/${APP}
