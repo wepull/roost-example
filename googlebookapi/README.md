@@ -22,7 +22,8 @@ make
 kubectl logs -f service/googlebookapi
 
 # zbio service logs
-kubectl logs service/zbio-service --namespace zbio
+# --tail 400 : To output last 400 lines of logs
+kubectl logs service/zbio-service --namespace zbio --tail 400
 
 # Deletes googlebookapi binaries and undeploy from ZKE
 make clean
@@ -34,8 +35,12 @@ Open RDE desktop's Workload Analytics to view application pods, services and log
 
 ### How to access GoogleBookAPI application
 
-* Open http://roost-master:30045/books/9788126568772
-  * isbn_number: `9788126568772` ; URL: http://roost-master:30045/books/<isbn_number>
+* Open <http://roost-master:30045/books/9788126568772> in browser
+
+  OR
+
+  > Run `curl http://roost-master:30045/books/9788126568772` from RKT Konsole
+  * isbn_number: `9788126568772` ; URL: <http://roost-master:30045/books/${isbn_number}>
 * ISBN stands for international standard book number , which is
     13 digit number uniquely identify all the books.
 * ISBN can be found in internet. **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
