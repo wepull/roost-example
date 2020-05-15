@@ -8,7 +8,7 @@ There are 3 ways to interact with this Pub-Sub project
 
 ## 1. Default mode
 
-Launch Roost Desktop Engine (RDE). Once Zettabytes Cluster Engine (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+Launch Roost Desktop Engine (RDE). Once Zettabytes K8s Environment  (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
 
 > Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
 

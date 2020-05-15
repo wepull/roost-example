@@ -7,7 +7,7 @@ In this `GoogleBookAPI` example, zbio is used as logging activity in the flow to
 
 ## Let's run this application in RDE
 
-Launch Roost Desktop Engine (RDE). Once Zettabytes Cluster Engine (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+Launch Roost Desktop Engine (RDE). Once Zettabytes K8s Environment  (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
 
 > Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
 
