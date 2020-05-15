@@ -65,7 +65,7 @@ kubectl exec -it zbio-sample-consumer -- consumer --prompt
 ```
 
 - > Comma seperated topics are allowed.
-- > If neither `--interactive` nor `--prompts` flags are provided, then producer and consumer interacts with default topics i.e. `pub-sub-example-1` and `pub-sub-example-2`
+- > If neither `--interactive` nor `--prompts` flags are provided, then producer and consumer run in **`default mode`** interacting with default topics i.e. `pub-sub-example-1` and `pub-sub-example-2`
 
 ## Cleaning (Always prefer to cleanup resources if not in use)
 
