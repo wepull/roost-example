@@ -42,10 +42,10 @@ build-client:
 dockerise:
 	docker build -t ${CLIENT_IMG}:${IMAGE_TAG} -f client.Dockerfile .
 	docker build -t ${SERVER_IMG}:${IMAGE_TAG} -f server.Dockerfile .	
-	ifeq ($(HOSTNAME), roost-utility)
+ifeq ($(HOSTNAME), roost-utility)
 		${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
 		${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
-	endif
+endif
 
 .PHONY: deploy
 deploy:
