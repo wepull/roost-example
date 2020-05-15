@@ -23,7 +23,6 @@ dockerise:
 .PHONY: clean
 clean: clean_bin
 	kubectl delete -f src/googlebookapi.yaml --now >/dev/null 2>&1 || true
-endif
 
 .PHONY: clean_bin
 clean_bin:
