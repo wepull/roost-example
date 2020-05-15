@@ -1,37 +1,26 @@
-# Pub-Sub Example
+# Publisher Subscriber Example
 
-Pub-Sub application demonstrates producer and consumer based communciation with zbio as messaging platform.
-Producer can create topics in zbio and start producing messages to those topics.
-Messages produced by producers can be consumed by consumer by subscribing to those created topics.
+This application demonstrates use of ZBIO messaging platform to implement a producer and consumer sample.
+
+* _Producer_ can create topics and send messages related to those topics.
+* Messages can be consumed by _Consumer_ by subscribing to those created topics.
 
 There are 3 ways to interact with this Pub-Sub project
 
-## 1. Default mode
+## 1. Default
+###### Using Roost Desktop Engine (RDE)
 
-Launch Roost Desktop Engine (RDE). Once Zettabytes K8s Environment  (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+> Right-click on `Makefile` and click `Run` for hassle-free deployment to ZKE
 
-> Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
-
+###### Using RKT Konsole to run application
 ```bash
 cd $GOPATH/src/github.com/roost-io/roost-example/pub-sub
-
 # Build, dockerise and deploy into ZKE cluster
 make
-
-# View producer and consumer log (Use `Workload Analytics` available in RDE desktop for better insights on deployed application)
-kubectl logs zbio-sample-producer --tail 300
-kubectl logs zbio-sample-consumer --tail 300
-
-# View zbio service logs
-kubectl logs service/zbio-service --namespace zbio
 ```
 
-Open RDE desktop's Workload Analytics to view application pods, services and logs
-
-[RDE Workload Analytics image](Show pub-sub pod logs and workload view)
-
 - > Default topics are created. i.e. `pub-sub-example-1` and `pub-sub-example-2`
-- > Producer keeps producing sequencial messages to these default topis.
+- > Producer keeps producing sequential messages to these default topics.
 - > Consumer keeps consuming from default topics.
 
 ## 2. Interactive mode (producer and consumer can interact with user defined topics)
@@ -42,13 +31,13 @@ Once `producer` and `consumer` pods running (from default mode), execute followi
 # Producer (single topic)
 kubectl exec -it zbio-sample-producer -- producer  --interactive --topic=pub-sub-interactive-1 --message="Sent message from producer interactively"
 
-# Producer (multiple topic)
+# Producer (multiple topics)
 kubectl exec -it zbio-sample-producer -- producer  --interactive --topic=pub-sub-interactive-1,pub-sub-interactive-1 --message="Sent message from producer interactively to multiple topics"
 
 # Consumer (single topic)
 kubectl exec -it zbio-sample-consumer -- consumer --interactive --topic=pub-sub-interactive-1
 
-# Consumer (multiple topic)
+# Consumer (multiple topics)
 kubectl exec -it zbio-sample-consumer -- consumer --interactive --topic=pub-sub-interactive-1,pub-sub-interactive-2
 ```
 
@@ -64,14 +53,30 @@ kubectl exec -it zbio-sample-producer -- producer  --prompt
 kubectl exec -it zbio-sample-consumer -- consumer --prompt
 ```
 
-- > Comma seperated topics are allowed.
+- > Comma separated topics are allowed.
 - > If neither `--interactive` nor `--prompts` flags are provided, then producer and consumer run in **`default mode`** interacting with default topics i.e. `pub-sub-example-1` and `pub-sub-example-2`
 
-## Cleaning (Always prefer to cleanup resources if not in use)
 
+## View application logs 
+> Using `Workload Analytics` (RDE)
+
+> [RDE Workload Analytics image](Show pub-sub pod logs and workload view)
+
+> Using RKT Konsole
 ```bash
-make clean
+kubectl logs -f zbio-sample-producer -n zbio
+kubectl logs zbio-sample-producer --namespace zbio --tail 400
+kubectl logs -f zbio-sample-consumer -n zbio
+kubectl logs zbio-sample-consumer --namespace zbio --tail 400
+kubectl logs service/zbio-service --namespace zbio
 ```
+ - logs option
+   * -f: to keep streaming logs from application
+   * --tail <n>: to get the last n lines of output
 
-- > _Deletes producer and consumer binaries_
-- > _Deletes deployed pub sub app resources from kubernetes_
+
+
+``` 
+Raise any issue or feature request using RDE 
+Join the Awesome Roost Community https://join.slack.com/t/roostai/shared_invite/zt-ea5mo10y-jDJgXiHn0RihSmucz0UZpw
+```

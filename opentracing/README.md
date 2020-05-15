@@ -1,16 +1,31 @@
-This is a Python example for Jaeger Open Tracing
+## Python program using Jaeger Open Tracing
 
+## How to run this application
+
+###### Using Roost Desktop Engine (RDE)
+
+> Right-click on `Makefile` and click `Run` for hassle-free deployment to ZKE
+
+ >What all is done by `make`?
+  * Installs python-pip 
+  * Installs jaeger_client
+  * Installs opentracing_instrumentation
+  * Executes python program booking-mgr.py
+  
+
+###### _Using RKT Konsole_
+```bash
 1) Install the jaeger-client
+   sudo apt-get install python-pip
    pip install jaeger-client
 
-2) # Check if docker is up and running
+2) Confirm that docker is up and running
    docker ps 
 
 3) Run the jaegertracing image
    docker run -d -p6831:6831/udp -p16686:16686 jaegertracing/all-in-one:latest
 
-4) Once the container starts, check the UI. The container runs the Jaeger backend with an in-memory store, which is initially empty.
-   Open http://localhost:16686/ in a browser
+4) To access the trace/spans at http://roost-utility:16686/ in any browser.
 
 5) Creating Traces on Jaeger UI
 
@@ -18,10 +33,13 @@ This is a Python example for Jaeger Open Tracing
 
    #Run the python program to look for a movie name and create a booking
    b) python booking-mgr.py <movie-name>
-   
+```   
 
-Sample output:
-harishagrawal@Harishs-MacBook-Pro opentracing % python booking-mgr.py 'abc'            
+###### Sample output:
+
+```bash
+$ python booking-mgr.py 'abc'      
+      
 Initializing Jaeger Tracer with UDP reporter
 Using selector: KqueueSelector
 Using sampler ConstSampler(True)
@@ -32,4 +50,9 @@ Ticket Details
 Reporting span b728a942aaf2ae76:45bf0d82d30f1073:21bf675e0d8009a2:1 booking.BookShow
 Reporting span b728a942aaf2ae76:21bf675e0d8009a2:0:1 booking.booking
 Using selector: KqueueSelector
+```
 
+``` 
+Raise any issue or feature request using RDE 
+Join the Awesome Roost Community https://join.slack.com/t/roostai/shared_invite/zt-ea5mo10y-jDJgXiHn0RihSmucz0UZpw
+```
