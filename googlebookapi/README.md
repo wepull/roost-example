@@ -1,54 +1,59 @@
 # GoogleBookAPI Example
 
-Google book API application is build on top of [flogo](https://www.flogo.io/) application to demostrate use of zbio messaging platform in flow based application.
-GoogleBookAPI application is integrated with zbio to send messages and persist them. These persisted messages are retained in zbio topics till rention period of the Topic. Messages can be further consumed by other component of the application or another microservices running. 
+Google book API application is built on top of [flogo](https://www.flogo.io/) application to demonstrate use of ZBIO messaging platform in flow based application.
+GoogleBookAPI application is integrated with ZBIO to send messages and persist them. These messages are retained in ZBIO topics till retention period of the Topic.
+Messages can be further consumed by another component of the application or a different micro-service.
 
-In this `GoogleBookAPI` example, zbio is used as logging activity in the flow to send every useful information in the form of messages to zbio. These messages are stored in the topics till topic's retention period. When application launch for first time, GoogleBookAPI application creates `googleBookAPI` topic to store messages. Every time request is made by the application to retrieve google book details, new activity logs are sent as new messages to ZBIO messaging platform in `googleBookAPI` topic.
+In this example, ZBIO is used as logging activity in the flow to send every useful information in the form of messages to ZBIO. 
+Upon launch for first time, GoogleBookAPI application creates topic `googleBookAPI`. 
+Every time a request is made by the user to retrieve any book detail, activity logs are sent as messages to ZBIO messaging platform under `googleBookAPI` topic.
 
-## Let's run this application in RDE
+## How to run this application
 
-Launch Roost Desktop Engine (RDE). Once Zettabytes K8s Environment  (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+Using Roost Desktop Engine (RDE).
 
-> Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
+> Right-click on `Makefile` and click `Run` for hassle-free deployments in ZKE
 
-```bash
-cd cd $GOPATH/src/github.com/roost-io/roost-example/googlebookapi
+ What all is done by `make`?
+  * Cleans existing deployment (if any)
+  * Removes executable
+  * Builds an executable by compiling the Go/Flogo code
+  * Containerize the executable
+  * Deploy the image to ZKE Cluster
 
-# Build, dockerise and deploy into ZKE cluster
+> Using RKT Konsole to run application
+```bash 
+cd $GOPATH/src/github.com/roost-io/roost-example/googlebookapi
 make
 
-# View application logs (Use `Workload Analytics` available in RDE desktop to get better insights on deployed application)
-# -f :to keep streaming logs from application
-kubectl logs -f service/googlebookapi
+## View application logs 
+> Using `Workload Analytics` (RDE) for deployed application
 
-# zbio service logs
-# --tail 400 : To output last 400 lines of logs
-kubectl logs service/zbio-service --namespace zbio --tail 400
+> [RDE Workload Analytics image](show_GoogleBookAPI_pod_logs_and_workload_view)
 
-# Deletes googlebookapi binaries and undeploy from ZKE
-make clean
-```
+> Using RKT Konsole
+```bash
+kubectl logs -f service/googlebookapi -n zbio
+kubectl logs service/googlebookapi --namespace zbio --tail 400
+   * -f: to keep streaming logs from application
+   * --tail <n>: to get the last n lines of output
 
-Open RDE desktop's Workload Analytics to view application pods, services and logs
 
-[RDE Workload Analytics image](show_GoogleBookAPI_pod_logs_and_workload_view)
-
-### How to access GoogleBookAPI application
-
-* Open <http://roost-master:30045/books/9788126568772> in browser
-
-  OR
-
-  > Run `curl http://roost-master:30045/books/9788126568772` from RKT Konsole
-  * isbn_number: `9788126568772` ; URL: <http://roost-master:30045/books/${isbn_number}>
-* ISBN stands for international standard book number , which is
-    13 digit number uniquely identify all the books.
-* ISBN can be found in internet. **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
+## How to access GoogleBookAPI application
+* ISBN stands for international standard book number.
+* It is 13 digit number uniquely identify all the books.
+* ISBN can be found in internet. 
+ **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
 * The digit should not have any special characters in between.
 
-## Cleaning (Always prefer to cleanup resources if not in use)
+> Using any browser
+* Open http://roost-master:30045/books/<isbn\>
+>>sample URL: http://roost-master:30045/books/9788126568772
 
-```bash
-# Deletes googlebookapi binaries and undeploy from ZKE
-make clean
-```
+> Using RKT Konsole
+  * curl http://roost-master:30045/books/<isbn\>
+  >>sample URL: http://roost-master:30045/books/9788126568772
+
+``` 
+Raise any issue or feature request using RDE 
+Join the Awesome Roost Community
