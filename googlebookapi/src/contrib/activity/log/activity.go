@@ -2,7 +2,9 @@ package log
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"strings"
 
 	zb "github.com/ZB-io/zbio/client"
 	"github.com/project-flogo/core/activity"
@@ -15,10 +17,10 @@ var (
 )
 
 const (
-	listenPort  = "5050"
-	usdCurrency = "USD"
-	topicName   = "googleBookAPI"
-	zbioEnabled = true
+	listenPort  string = "5050"
+	usdCurrency string = "USD"
+	topicName   string = "googleBookAPI"
+	zbioEnabled bool   = true
 )
 
 // Tip: USE ENV[SERVICE_ADDRESS] to set service endpoint
@@ -26,6 +28,7 @@ var zbioServiceEndpoint string = "zbio-service:50002"
 
 func init() {
 	_ = activity.Register(&Activity{}, New)
+	initZBIO()
 }
 
 type Input struct {
@@ -45,7 +48,6 @@ func (i *Input) ToMap() map[string]interface{} {
 func New(ctx activity.InitContext) (activity.Activity, error) {
 
 	act := &Activity{} //add aSetting to instance
-	initZBIO("")
 	return act, nil
 }
 
@@ -88,51 +90,41 @@ func getZBClient() (*zb.Client, error) {
 		if zbsvc := os.Getenv("SERVICE_ADDRESS"); zbsvc != "" {
 			zbioServiceEndpoint = zbsvc
 		}
-		fmt.Printf("service endpoint is: %s", zbioServiceEndpoint)
+		log.Printf("service endpoint is: %s\n", zbioServiceEndpoint)
 		zbClientConfig := zb.Config{Name: "GoogleBookAPI", ServiceEndPoint: zbioServiceEndpoint}
 
 		zbclient, err = zb.New(zbClientConfig)
 		if err != nil {
-			fmt.Printf("failed getting zbio client, errror: %+v", err)
+			log.Printf("failed getting zbio client, errror: %+v\n", err)
 			return nil, err
 		}
 	}
 	return zbclient, nil
 }
 
-func initZBIO(str string) {
-	if str == "" {
-		zbclient, _ := getZBClient()
-		if zbclient != nil {
-			topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(10000))
-			fmt.Println(topicCreated)
-			if err != nil {
-				fmt.Println("failed to create topic, error: $v", err)
-			}
-			fmt.Printf("create topic status: %s : %v", topicName, topicCreated)
+func initZBIO() {
+	zbclient, _ := getZBClient()
+	if zbclient != nil {
+		topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(10000))
+		if err != nil {
+			log.Printf("failed to create topic, error: %v\n", err)
 		}
-	} else {
-		var zbMessages []zb.Message
-		zbMessages = append(zbMessages, zb.Message{
-			TopicName:     topicName,
-			Data:          []byte(fmt.Sprintf(str)),
-			HintPartition: "",
-		})
-		sendMessageToZBIO(zbMessages)
+		log.Printf("create topic status: TopicName: %s\tStatus: %v\n", topicName, topicCreated)
 	}
-
 }
 
-func sendMessageToZBIO(messages []zb.Message) {
+func sendMessageToZBIO(ctx activity.Context, messages []zb.Message) {
 	// send messages only if topic exists zbClient.DescribeTopics([]string{topicName})
 	var topicFound = true
 	if topicFound {
-		fmt.Println(messages)
 		newMessageStatus, err := zbclient.NewMessage(messages)
 		if err != nil {
-			fmt.Println("failed to write message to zbio, error:", err)
+			ctx.Logger().Errorf("failed to write message to zbio, error: %v", err)
 		}
-		fmt.Printf("messages sent to zbio, %v", newMessageStatus)
+		for resp, status := range newMessageStatus {
+			msgInfo := strings.Split(resp, ",")
+			ctx.Logger().Infof("messages sent to zbio status? TopicName: %s\t Status: %s", msgInfo[0], status)
+		}
 	}
 }
 
@@ -149,10 +141,17 @@ func (a *Activity) Eval(ctx activity.Context) (done bool, err error) {
 			ctx.ActivityHost().ID(), ctx.ActivityHost().Name(), ctx.Name())
 	}
 
-	initZBIO(msg)
+	zbMessages := []zb.Message{
+		zb.Message{
+			TopicName:     topicName,
+			Data:          []byte(fmt.Sprintf(msg)),
+			HintPartition: "",
+		},
+	}
+	sendMessageToZBIO(ctx, zbMessages)
 
 	if input.UsePrint {
-		fmt.Println(msg)
+		log.Println("UsePrint message: ", msg)
 	} else {
 		ctx.Logger().Info(msg)
 	}

@@ -20,7 +20,7 @@ GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 HOSTNAME := $(shell hostname)
 
 .PHONY: all
-all: clean prerequisites build dockerise
+all: clean prerequisites build dockerise deploy
 	$(MAKE) clean_bin
 
 .PHONY: prerequisites

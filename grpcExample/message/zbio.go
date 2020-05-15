@@ -61,6 +61,9 @@ func SendMessageToZBIO(messages []zb.Message) {
 		if err != nil {
 			log.Printf("failed to write message to zbio, error: %v", err)
 		}
-		log.Printf("messages sent to zbio, %v", newMessageStatus)
+		for resp, status := range newMessageStatus {
+			// msgInfo := strings.Split(resp, ",") // topicName:partition:messageIndex
+			log.Printf("messages sent to zbio status? TopicName: %s\t Status: %s", resp, status)
+		}
 	}
 }

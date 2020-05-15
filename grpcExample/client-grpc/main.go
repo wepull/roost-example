@@ -88,7 +88,7 @@ func main() {
 
 		// Send requested message to zbio
 		message = zb.Message{
-			TopicName:     message.TopicName, // default topicName
+			TopicName:     zbutil.TopicName, // default topicName
 			Data:          []byte(requestLog),
 			HintPartition: "",
 		}
@@ -105,7 +105,7 @@ func main() {
 
 		// Send response message to zbio
 		message = zb.Message{
-			TopicName:     message.TopicName, // default topicName
+			TopicName:     zbutil.TopicName, // default topicName
 			Data:          []byte(responseLog),
 			HintPartition: "",
 		}

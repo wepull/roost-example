@@ -120,7 +120,10 @@ func startProducer() {
 		if err != nil {
 			log.Fatalf("NewMessage failed with error: %v\n", err)
 		}
-		log.Printf("NewMessage Response: %v\n", response)
+		for resp, status := range response {
+			// msgInfo := strings.Split(resp, ",") // topicName:partition:messageIndex
+			log.Printf("messages sent to zbio status? TopicName: %s\t Status: %s", resp, status)
+		}
 
 		time.Sleep(1 * time.Second)
 	}

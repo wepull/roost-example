@@ -35,50 +35,6 @@ var (
 	cfgCompressed bool
 )
 
-/*func getZBClient() (*zb.Client, error) {
-	var err error
-	if zbclient == nil && zbioEnabled {
-		zbClientConfig := zb.Config{Name: "PlaceOrder", ServiceEndPoint: zbioServiceEndpoint}
-
-		zbclient, err = zb.New(zbClientConfig)
-		if err != nil {
-			fmt.Println("failed getting zbio client, errror: %+v", err)
-			return nil, err
-		}
-	}
-	return zbclient, nil
-}
-
-func initZBIO() {
-	zbclient, _ := getZBClient()
-	if zbclient != nil {
-		topicCreated, err := zbclient.CreateTopic(topicName, "", int32(1), int32(1), int32(10000))
-		if err != nil {
-			fmt.Println("failed to create topic, error: $v", err)
-		}
-		fmt.Println("create topic status: %s : %v", topicName, topicCreated)
-		var zbMessages []zb.Message
-		zbMessages = append(zbMessages, zb.Message{
-			TopicName:     topicName,
-			Data:          []byte(fmt.Sprintf("Message Created")),
-			HintPartition: "",
-		})
-		sendMessageToZBIO(zbMessages)
-	}
-}
-
-func sendMessageToZBIO(messages []zb.Message) {
-	// send messages only if topic exists zbClient.DescribeTopics([]string{topicName})
-	var topicFound = true
-	if topicFound {
-		newMessageStatus, err := zbclient.NewMessage(messages)
-		if err != nil {
-			fmt.Println("failed to write message to zbio, error:", err)
-		}
-		fmt.Println("messages sent to zbio, %v", newMessageStatus)
-	}
-}*/
-
 func main() {
 
 	cpuProfiling := false

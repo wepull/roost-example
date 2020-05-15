@@ -65,7 +65,7 @@ func startConsumer() {
 	// topics := []string{"test-topic-1", "test-topic-2"}
 	topics := []string{"pub-sub-example-1", "pub-sub-example-2"}
 
-	msgChanMap, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
+	msgChanMap, errChan, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
 
 	if err != nil {
 		log.Fatal("Read message failed " + err.Error())
@@ -76,9 +76,10 @@ func startConsumer() {
 			select {
 			case msg := <-msgChanMap[topics[0]]:
 				log.Println("Message Received ", topics[0], string(msg))
-
 			case msg := <-msgChanMap[topics[1]]:
 				log.Println("Message Received ", topics[1], string(msg))
+			case msg := <-errChan:
+				log.Printf("Error reading messages from consumer channel. Error: %s", msg.Error())
 			default:
 				log.Println("Awaiting for response on consumer channel. Will sleep for 2 sec")
 				time.Sleep(2 * time.Second)
@@ -91,15 +92,26 @@ func startConsumer() {
 // outputSubscription stream out topics data.
 func outputSubscription(topics []string) {
 	fmt.Println("Streaming response from topic(s)? Press ctrl+c exit and subscribe another topic")
-	subscribers, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
+	msgChanMap, errChan, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
 	if err != nil {
-		log.Fatalf("Read message failed. Error: %v" + err.Error())
+		log.Fatal("Read message failed " + err.Error())
 	}
-	for topic, subscriber := range subscribers {
-		go func(t string, s chan []byte) {
-			log.Printf("Receiving messages...\tTopic: %s : Message: %s\n", t, string(<-s))
-		}(topic, subscriber)
-	}
+
+	go func() {
+		for {
+			select {
+			case msg := <-msgChanMap[topics[0]]:
+				log.Println("Message Received ", topics[0], string(msg))
+			case msg := <-msgChanMap[topics[1]]:
+				log.Println("Message Received ", topics[1], string(msg))
+			case msg := <-errChan:
+				log.Printf("Error reading messages from consumer channel. Error: %s", msg.Error())
+			default:
+				log.Println("Awaiting for response on consumer channel. Will sleep for 2 sec")
+				time.Sleep(2 * time.Second)
+			}
+		}
+	}()
 	select {}
 }
 

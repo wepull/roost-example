@@ -129,7 +129,7 @@ type MessageResponse struct {
 func New(cfg Config) (*Client, error) {
 	config.InitTrace()
 
-	log.Printf("Clientname : %s, serviceEndPoint is %s", cfg.Name, cfg.ServiceEndPoint)
+	log.Debugf("clientName is: %s\tzbio service endpoint is: %s\n", cfg.Name, cfg.ServiceEndPoint)
 
 	//example with a 100ms linear backoff interval, and retry only on NotFound and Unavailable.
 	opts := []grpcretry.CallOption{
@@ -207,7 +207,7 @@ func (cli *Client) ZbTest(str string) (string, error) {
 	if ok {
 		return "", status.Errorf(stat.Code(), "Message: %s\t, Details: %v,\tError: %v", stat.Message(), stat.Details(), stat.Err())
 	}
-	log.Infof("Res: %v, err: %v, stat: %v, ok: %v", r, err, stat, ok)
+	log.Debugf("ZbTest newMessage Res: %v, err: %v, stat: %v, ok: %v", r, err, stat, ok)
 	return r.GetMessage(), err
 }
 
@@ -367,7 +367,11 @@ func (cli *Client) CreateTopics(topicNames []string, brokerGroup string, p, r in
 	return true, nil
 }
 
-// NewMessage writes messages to the topic and returns map[topicName]StatusCode and error
+// NewMessage writes messages to the topic and returns "n" numbers of messages which are written.
+// 	Response format is: response[key]value
+// 		key: is in the form (topicName:partitionHint:messageId) // from broker/broker.go
+//		value: status.code().String()
+//  TODO: (update key format if not meaningful)
 func (cli *Client) NewMessage(messages []Message) (map[string]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
 	defer cancel()
@@ -394,7 +398,7 @@ func (cli *Client) NewMessage(messages []Message) (map[string]string, error) {
 
 	span.AddEventWithTimestamp(ctx, time.Now(), "NewMessage Request", []core.KeyValue{otkey.New("message count").Int(len(messages))}...)
 
-	log.Infof("Requested NewMessage data: %v", pbMessages)
+	log.Debugf("Requested NewMessage data: %v", pbMessages)
 	request := pbcommon.NewMessageRequest{
 		Messages: pbMessages,
 	}
@@ -416,7 +420,7 @@ func ctxWithToken(ctx context.Context, scheme string, token string) context.Cont
 	return nCtx
 }
 
-func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (map[string]chan []byte, error) {
+func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (map[string]chan []byte, <-chan error, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
 	defer cancel()
@@ -430,9 +434,9 @@ func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (
 
 	span.AddEventWithTimestamp(ctx, time.Now(), "ReadMessages Request", []core.KeyValue{otkey.String("clientID", clientId)}...)
 	stream, err := cli.zbCli.SubscribeConsumer(ctx)
-
 	if err != nil {
-		return nil, err
+		log.Errorf("Unable to subscribe consumer. Error: %v", err)
+		return nil, nil, err
 	}
 
 	// Send subscribe request
@@ -447,12 +451,13 @@ func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (
 
 	sessionId := ""
 	if subscribeResp, err := stream.Recv(); err != nil {
-		return nil, err
+		log.Errorf("Unable to receive over stream. Error: %v", err)
+		return nil, nil, err
 	} else {
 		resp := subscribeResp.GetInitResponse().Responses
 		for _, respStatus := range resp {
 			if respStatus.Code != pbcommon.ResponseStatus_OK {
-				return nil, errors.New("Failed to create subscription " + respStatus.Message)
+				return nil, nil, errors.New("Failed to create subscription " + respStatus.Message)
 			}
 		}
 		sessionId = subscribeResp.GetInitResponse().SessionId
@@ -461,8 +466,7 @@ func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (
 			otkey.String("clientID", clientId),
 		}...)
 
-		log.Debugf("Received consumer init response %+v %+v",
-			sessionId, resp)
+		log.Debugf("Received consumer init response %+v %+v", sessionId, resp)
 	}
 
 	msgChanMap := make(map[string]chan []byte)
@@ -500,12 +504,11 @@ func (cli *Client) ReadMessages(clientId, clientGroup string, topics []string) (
 
 			// Got Re-balance message
 			consumer.rebalanceCh <- in.GetRebalResponse()
-			// log.Println("Got " + in.Msg)
+			log.Debugf("Got %v\n", in.GetResponse())
 		}
-
 	}()
 	go consumer.handleRebalance()
-	return msgChanMap, nil
+	return msgChanMap, consumer.errorCh, nil
 }
 
 func (cli *Client) PeekMessages(clientId, clientGroup, topic string) (*pbcommon.GetMessageResponse, error) {
@@ -547,7 +550,7 @@ func (cons *Consumer) handleRebalance() {
 
 		cons.partitionMapLock.RLock()
 		for _, part := range rebalanceInfo.Deleted {
-			log.Printf("Giving up ownership of topic %s partition %d",
+			log.Debugf("Giving up ownership of topic %s partition %d",
 				rebalanceInfo.TopicName, part.Partnum)
 			key := getPartitionKey(rebalanceInfo.TopicName, part.Partnum)
 
@@ -633,6 +636,7 @@ func (part *Partition) Start(cons *Consumer) {
 				}
 			} else {
 				log.Errorf("GetMessage Error : %+v ", err)
+				cons.errorCh <- fmt.Errorf("Error reading message from partition. PartitionKey: %v, Error: %v", part.key, err)
 			}
 		}
 	}
@@ -715,7 +719,7 @@ func (cli *Client) DeleteTopic(topicName []string) (bool, error) {
 	if err == nil {
 		// log.Println(response)
 		for _, del := range response.DeletedTopics {
-			log.Infof("response: %v Code:%v Message:%v", del,
+			log.Debugf("Delete topic response: %v Code:%v Message:%v", del,
 				response.Responses[del.Name].Code, response.Responses[del.Name].Message)
 		}
 		return true, nil
