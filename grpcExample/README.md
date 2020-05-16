@@ -1,40 +1,47 @@
 # Health checking gRPC server on Kubernetes
 
-This gRPC client server application was implemented for the purpose of showing how to do the health check of gRPC servers on Kubernetes and use zbio messaging platform to persist grpc-client and grpc-server messaging events.
-
+This gRPC client-server app shows how to check health of gRPC servers on Kubernetes while using ZBIO messaging platform to persist grpc-client and grpc-server events.
 Kubernetes health checks (liveness and readiness probes) detect unresponsive pods, mark them unhealthy, and cause these pods to be restarted or rescheduled.
+However, Kubernetes does not support gRPC checks natively which means that the developers need to implement it.
 
-Kubernetes does not support gRPC health checks natively which means that the developers should implement it when they deploy to Kubernetes.
+gRPC has a standard health checking protocol that can be used from any language. 
 
-gRPC has a standard health checking protocol that can be used from any language. In this example, we have implemented this standard health checking protocol in our gRPC app, and invoked the `Check()` method to determine the server's status.
+## How to run this application
 
-## How to deploy application into ZKE Cluster
+###### Using Roost Desktop Engine (RDE)
 
-Launch Roost Desktop Engine (RDE). Once Zettabytes K8s Environment (ZKE) is up and running, open RKT Konsole (Roost Kubernetes Terminal) and run following commands -
+> Right-click on `Makefile` and click `Run` for hassle-free deployment to ZKE
 
-> Right-click on `Makefile` and click `Run` for hasselfree deployments in ZKE
+ >What all is done by `make`?
+  * Cleans existing deployment [kubernetes/deploy.yaml](kubernetes/deploy.yaml)
+  * Removes the application binary [bin/grpcServer && bin/grpcClient](bin/grpcServer && bin/grpcClient)
+  * Builds grpcClient and grpcServer by compiling the Golang code [src/main.go](src/main.go)
+  * Builds an image using the app binary [serveri-grpci && client-grpc](server-grpci && client-grpc)
+  * Deploys the image to ZKE Cluster [kubernetes/deploy.yaml](kubernetes/deploy.yaml)
 
-```bash
-# Build server and client binaries, dockerise and deploy them into ZKE cluster
+###### Using RKT Konsole to run application
+
+```bash 
+cd $GOPATH/src/github.com/roost-io/roost-example-latest/grpcExample
 make
-
-# Delete server and client binaries and undeploy application from ZKE cluster
-make clean
 ```
 
-## View logs of running application
+## View application logs 
+> Using `Workload Analytics` (RDE) for deployed application
 
-Application is integrated with zbio to send messages into zbio topic from grpc-client and grpc-server side. ZBIO service endpoint is provided as container's ```ENV['SERVICE_ADDRESS']``` added in ```kubernetes/deploy.yaml```
+> [RDE Workload Analytics image](show_GrpcExample_pod_logs_and_workload_view)
 
+> Using RKT Konsole
 ```bash
-# View application logs (Use `Workload Analytics` available in RDE desktop to get better insights on deployed application)
-kubectl logs grpc-deploy-8f95984fd-qm2xd  -c client
-kubectl logs grpc-deploy-8f95984fd-qm2xd  -c server
+kubectl get pods -n default # Get the grpc-deploy-* pod name
+kubectl logs <grpc-deploy-XXX> -c client
+kubectl logs <grpc-deploy-XXX> -c server
+kubectl logs service/zbio-service --namespace zbio --tail 500
 
-kubectl logss service/zbio-service --namespace zbio --tail 500
+Additional options to logs can be given for streaming or getting last n lines
+   * -f: to keep streaming logs from application
+   * --tail <n>: to get the last n lines of output
 ```
-
-Open RDE desktop's Workload Analytics to view application pods, services and logs
 
 ## This sections provide explanations of each part of the application
 
@@ -252,7 +259,7 @@ for {
 }
 ```
 
-## Roost Kubernetes Engine (ZKE)
+## Zettabytes Kubernetes Engine (ZKE)
 
 The __kubernetes/deploy.yaml__ defines the container and pod's spec to be deployed on ZKE cluster.
 We use Kubernetes exec probes and define liveness and readiness probes for the gRPC server container.
