@@ -53,6 +53,6 @@ Using selector: KqueueSelector
 ```
 
 ``` 
-Raise any issue or feature request using RDE 
+Raise any issue or feature request using RDE Help
 Join the Awesome Roost Community https://join.slack.com/t/roostai/shared_invite/zt-ea5mo10y-jDJgXiHn0RihSmucz0UZpw
 ```

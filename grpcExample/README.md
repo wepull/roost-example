@@ -302,22 +302,7 @@ kubectl logs grpc-deploy-8f95984fd-qm2xd  -c server
 6. https://hub.docker.com/r/znly/protoc
 7. https://github.com/grpc-ecosystem/grpc-health-probe
 
-## Contributing
-
-We welcome Your interest in the American Express Open Source Community on Github.
-Any Contributor to any Open Source Project managed by the American Express Open
-Source Community must accept and sign an Agreement indicating agreement to the
-terms below. Except for the rights granted in this Agreement to American Express
-and to recipients of software distributed by American Express, You reserve all
-right, title, and interest, if any, in and to Your Contributions. Please [fill
-out the Agreement](https://cla-assistant.io/americanexpress/grpc-k8s-health-check).
-
-## License
-
-Any contributions made under this project will be governed by the [Apache License
-2.0](./LICENSE.txt).
-
-## Code of Conduct
-
-This project adheres to the [American Express Community Guidelines](./CODE_OF_CONDUCT.md).
-By participating, you are expected to honor these guidelines.
+``` 
+Raise any issue or feature request using RDE Help
+Join the Awesome Roost Community https://join.slack.com/t/roostai/shared_invite/zt-ea5mo10y-jDJgXiHn0RihSmucz0UZpw
+```

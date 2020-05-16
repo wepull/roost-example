@@ -32,8 +32,8 @@ make
 
 > Using RKT Konsole
 ```bash
-kubectl logs -f service/googlebookapi -n zbio
-kubectl logs service/googlebookapi --namespace zbio --tail 400
+kubectl logs -f service/googlebookapi -n default
+kubectl logs service/googlebookapi --namespace default --tail 400
    * -f: to keep streaming logs from application
    * --tail <n>: to get the last n lines of output
 ```
@@ -53,6 +53,6 @@ kubectl logs service/googlebookapi --namespace zbio --tail 400
   >>sample URL: http://roost-master:30045/books/9788126568772
 
 ``` 
-Raise any issue or feature request using RDE 
+Raise any issue or feature request using RDE Help
 Join the Awesome Roost Community https://join.slack.com/t/roostai/shared_invite/zt-ea5mo10y-jDJgXiHn0RihSmucz0UZpw
 ```
