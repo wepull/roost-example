@@ -18,4 +18,7 @@
 
     # compare all image sizes
     docker images | grep html
+
+    # Run application in Docker. Open brower http://roost-master:8080
+    docker run -p 8080:8080 html:scratch
 ```
