@@ -10,19 +10,19 @@ build:
 
 .PHONY: dockerise
 dockerise:
-	docker build -f make.Dockerfile -t html:make_scratch .
+	DOCKER_BUILDKIT=1 docker build -f make.Dockerfile -t html:make_scratch .
 
 # Dockerise app with golang as base image
 build-image-html-golang:
-	docker build -t html:golang .
+	DOCKER_BUILDKIT=1 docker build -t html:golang .
 
 # Dockerise app with multistage build and alpine as base image
 build-image-html-alpine:
-	docker build -f alpine.Dockerfile -t html:alpine .
+	DOCKER_BUILDKIT=1 docker build -f alpine.Dockerfile -t html:alpine .
 
 # Dockerise app with multistage build and scratch as base image
 build-image-html-scratch:
-	docker build -f scratch.Dockerfile -t html:scratch .
+	DOCKER_BUILDKIT=1 docker build -f scratch.Dockerfile -t html:scratch .
 
 # Run the html:golang image
 docker-run-html-golang:
