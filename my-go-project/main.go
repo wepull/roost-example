@@ -3,8 +3,13 @@ package main
 import (
 	"html/template"
 	"log"
+	"net"
 	"net/http"
+	"path/filepath"
 )
+
+var appPath = "/app"
+var appPort = "8080"
 
 func check(err error) {
 	if err != nil {
@@ -13,8 +18,8 @@ func check(err error) {
 }
 
 func viewHandler(writer http.ResponseWriter, request *http.Request) {
-	  
-	html, err := template.ParseFiles("view.html")
+	absPath, _ := filepath.Abs(appPath)
+	html, err := template.ParseFiles(filepath.Join(absPath, "view.html"))
 	check(err)
 	err = html.Execute(writer, nil)
 	check(err)
@@ -22,5 +27,5 @@ func viewHandler(writer http.ResponseWriter, request *http.Request) {
 
 func main() {
 	http.HandleFunc("/", viewHandler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(net.JoinHostPort("", appPort), nil)
 }
