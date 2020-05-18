@@ -32,13 +32,13 @@ kubectl logs service/myapp
 
 ## How to access app
 
-> Using any browser
+> Using browser
 
 * Open <http://roost-master:30047>
 
 ### Following are valid `make` commands
 
-Change working directory to `$GOPATH/src/github.com/roost-io/roost-example/` to run following valid `make` commands.
+> Change working directory to `$GOPATH/src/github.com/roost-io/roost-example/` to run following valid `make` commands.
 
 ```bash
 cd $GOPATH/src/github.com/roost-io/roost-example/
@@ -46,49 +46,49 @@ cd $GOPATH/src/github.com/roost-io/roost-example/
 
 ###### Commands are -
 
-1. Dockerise app with `golang` as base image
+Dockerise app with `golang` as base image
 
 ```bash
 make build-image-html-golang
 ```
 
-1. Dockerise app with `multistage build and alpine` as base image
+Dockerise app with `multistage build and alpine` as base image
 
 ```bash
 make build-image-html-alpine
 ```
 
-1. Dockerise app with `multistage build and scratch` as base image
+Dockerise app with `multistage build and scratch` as base image
 
 ```bash
 make build-image-html-scratch
 ```
 
-1. Run application with `html:golang` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:golang` image (accessible at [http://roost-master:30047](http://roost-master:30047))
 
 ```bash
 make docker-run-html-golang
 ```
 
-1. Run application with `html:alpine` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:alpine` image (accessible at [http://roost-master:30047](http://roost-master:30047))
 
 ```bash
 make docker-run-html-alpine
 ```
 
-1. Run application with `html:scratch` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:scratch` image (accessible at [http://roost-master:30047](http://roost-master:30047))
 
 ```bash
 make docker-run-html-scratch
 ```
 
-1. Clean [undeploy app from kubernetes]
+Clean [undeploy app from kubernetes]
 
 ```bash
 make clean
 ```
 
-1. Delete application binary [delete application build binary]
+Delete application binary [delete application build binary]
 
 ```bash
 make clean_bin
