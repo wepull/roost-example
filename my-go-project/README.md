@@ -2,8 +2,6 @@
 
 ## Commands
 
-- Build application with `golang:latest` as base image.
-
 ```bash
     cd $GOPATH/src/github.com/roost-io/roost-example/my-go-project
 
