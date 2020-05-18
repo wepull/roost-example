@@ -26,6 +26,8 @@ func viewHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func main() {
+	log.Printf("Serving at port: %s.", appPort)
+	log.Printf("Deployment port may differ from application port. If running from RDE, access app in browser at: %s", "http://roost-master:30047")
 	http.HandleFunc("/", viewHandler)
 	http.ListenAndServe(net.JoinHostPort("", appPort), nil)
 }

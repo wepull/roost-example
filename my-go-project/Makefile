@@ -1,18 +1,52 @@
 #MAKE fike for implementing example
 
-#Build the docker image
-build-image:
-	docker build -t html_image:v1 .
+.PHONY: all
+all: clean build dockerise deploy
+	$(MAKE) clean_bin
 
-#Run the docker image 
-docker-run:
-	docker run -p8080:8080 html_image:v1
+.PHONY: build
+build: 
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
-#Deploy on the kubernetes cluster
+.PHONY: dockerise
+dockerise:
+	docker build -f make.Dockerfile -t html:make_scratch .
+
+# Dockerise app with golang as base image
+build-image-html-golang:
+	docker build -t html:golang .
+
+# Dockerise app with multistage build and alpine as base image
+build-image-html-alpine:
+	docker build -f alpine.Dockerfile -t html:alpine .
+
+# Dockerise app with multistage build and scratch as base image
+build-image-html-scratch:
+	docker build -f scratch.Dockerfile -t html:scratch .
+
+# Run the html:golang image
+docker-run-html-golang:
+	docker run -p 30047:8080 html:golang
+
+# Run the html:alpine image
+docker-run-html-alpine:
+	docker run -p 30047:8080 html:alpine
+
+# Run the html:scratch image
+docker-run-html-scratch:
+	docker run -p 30047:8080 html:scratch
+
+# Deploy in the kubernetes cluster
 deploy:
-	kubectl apply -f my.yaml
+	kubectl apply -f k8s-deployment.yaml
 
-#Clean and remove all the supported files
-clean: 
-	kubectl delete -f my.yaml
-	docker rmi html_image:v1
+# Clean 
+clean: undeploy
+
+.PHONY: undeploy
+undeploy:
+	kubectl delete -f k8s-deployment.yaml >/dev/null 2>&1 || true
+
+.PHONY: clean_bin
+clean_bin:
+	rm -f app
