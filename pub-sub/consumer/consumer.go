@@ -9,15 +9,13 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/ZB-io/zbio/client"
-	"github.com/ZB-io/zbio/rpc/common"
 )
 
 var (
 	zbCli               *client.Client
-	zbioServiceEndpoint string = "zbio-service:50002"
+	zbioServiceEndpoint string = "zbio-service.zbio:50002"
 	topicsIn                   = flag.String("topic", "", "Name of topic(s) to read messages from. Comma seperated list of topics are accepted. (*Required if --interactive)")
 	interactiveIn              = flag.Bool("interactive", false, "(*Required) Start interactive session. Pass either --interactive or --prompt flag. (default: false)")
 	promptIn                   = flag.Bool("prompt", false, "Prompts for inputs to enter in STDIN. No need to pass topic and message flags. Press crtl+c to exit. (ignored if --interactive flag is passed")
@@ -55,63 +53,48 @@ func main() {
 	} else {
 		startConsumer()
 	}
-	// outputSubscription()
 }
 
 // startConsumer keep streaming messages from default topics.
 func startConsumer() {
-	log.Println("Consumer started.")
-
-	// topics := []string{"test-topic-1", "test-topic-2"}
 	topics := []string{"pub-sub-example-1", "pub-sub-example-2"}
 
-	msgChanMap, errChan, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
+	msgChanMap, err := zbCli.ReadMessages("pub-sub-testClient", "pub-sub-TestClientGroup", topics)
 
 	if err != nil {
-		log.Fatal("Read message failed " + err.Error())
+		log.Fatalf("Read message failed " + err.Error())
 	}
 
-	go func() {
-		for {
-			select {
-			case msg := <-msgChanMap[topics[0]]:
-				log.Println("Message Received ", topics[0], string(msg))
-			case msg := <-msgChanMap[topics[1]]:
-				log.Println("Message Received ", topics[1], string(msg))
-			case msg := <-errChan:
-				log.Printf("Error reading messages from consumer channel. Error: %s", msg.Error())
-			default:
-				log.Println("Awaiting for response on consumer channel. Will sleep for 2 sec")
-				time.Sleep(2 * time.Second)
-			}
-		}
-	}()
+	for topic, msgChan := range msgChanMap {
+		go printConsumedMessages(topic, msgChan)
+	}
 	select {}
+}
+
+func printConsumedMessages(topic string, msgChan chan []byte) {
+	for {
+		msg, ok := <-msgChan
+		if !ok {
+			log.Printf("Read channel closed for topic: %s\n", topic)
+			break
+		} else {
+			log.Printf("Message from topic: %s\t is: %v\n", topic, string(msg))
+		}
+	}
 }
 
 // outputSubscription stream out topics data.
 func outputSubscription(topics []string) {
-	fmt.Println("Streaming response from topic(s)? Press ctrl+c exit and subscribe another topic")
-	msgChanMap, errChan, err := zbCli.ReadMessages(zbCli.Name, zbCli.Name+"TestConsumerGroup", topics)
+	log.Println("Streaming response from topic(s)? Press ctrl+c exit and subscribe another topic")
+	msgChanMap, err := zbCli.ReadMessages("pub-sub-interactive-testClient", "pub-sub-interactive-TestClientGroup", topics)
+
 	if err != nil {
-		log.Fatal("Read message failed " + err.Error())
+		log.Fatalf("Read message failed " + err.Error())
 	}
 
-	go func() {
-		for {
-			select {
-			case msg := <-msgChanMap[topics[0]]:
-				log.Println("Message Received ", topics[0], string(msg))
-			case msg := <-msgChanMap[topics[1]]:
-				log.Println("Message Received ", topics[1], string(msg))
-			case msg := <-errChan:
-				log.Printf("Error reading messages from consumer channel. Error: %s", msg.Error())
-			default:
-				log.Println("Awaiting for response on consumer channel. Will sleep for 2 sec")
-				time.Sleep(2 * time.Second)
-			}
-		}
-	}()
+	for topic, msgChan := range msgChanMap {
+		go printConsumedMessages(topic, msgChan)
+	}
 	select {}
 }
 
@@ -120,7 +103,7 @@ func unsubscribe() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		promptSubscriber()
+		os.Exit(1)
 	}()
 }
 
@@ -161,6 +144,7 @@ func topicsPrompt(reader *bufio.Reader) ([]string, error) {
 
 // promptSubscriber interactively
 func promptSubscriber() {
+	go unsubscribe()
 	reader := bufio.NewReader(os.Stdin)
 
 	subscribe, err := subscriptionPrompt(reader)
@@ -176,8 +160,6 @@ func promptSubscriber() {
 			log.Fatal("Unable to read user input from topicsPrompt")
 			promptSubscriber()
 		}
-
-		go unsubscribe()
 
 		// Check if Topics exists. If doesn't exists, keep asking for valid topic
 		topicStatus, err := zbCli.DescribeTopic(topics)
@@ -228,15 +210,11 @@ func flagSubscriber() {
 		log.Fatalf("Error describing to topic. Error: %v\n", err)
 	}
 
-	// Check if topics are found
-	for topicName, response := range topicStatus.GetResponses() {
-		if response.Code == common.ResponseStatus_OK {
-			validTopics = append(validTopics, topicName)
-			fmt.Printf("Topic: %s\tDescribe Response: %v\n", topicName, response.GetDetails())
-		} else {
-			log.Printf("Unable to describe topic: %s, Response Code: %v", topicName, response.Code)
-		}
+	for _, topic := range topicStatus.GetTopics() {
+		validTopics = append(validTopics, topic.GetName())
 	}
+
+	log.Printf("Valid topics are %v", validTopics)
 	outputSubscription(validTopics)
 }
 
