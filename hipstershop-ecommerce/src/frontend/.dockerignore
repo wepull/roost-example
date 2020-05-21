@@ -1,1 +1,4 @@
 vendor/
+genproto.sh
+Makefile
+README.md

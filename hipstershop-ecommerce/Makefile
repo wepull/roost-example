@@ -17,7 +17,7 @@ GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 
 HOSTNAME := $(shell hostname -f)
 
-SUBDIRS = src
+GO_SERVICES = ${PRODUCT_CATALOG_SERVICE_IMG} ${SHIPPING_SERVICE_IMG} ${CHECKOUTSERVICE_IMG} ${FRONTEND_IMG}
 MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${PRODUCT_CATALOG_SERVICE_IMG} \
 				${RECOMMENDATION_SERVICE_IMG}	\
@@ -30,8 +30,11 @@ MICROSERVICES = ${EMAIL_SERVICE_IMG} \
 				${LOAD_GENERATOR_IMG}	\
 				${ADDSERVICE_IMG}
 
+SERVICE_GRPC_BIN = $(foreach microservice, ${MICROSERVICES}, "src/${microservice}"/${GRPC_HEALTH_PROBE})
+GO_SERVICE_BIN = $(foreach go_services, ${GO_SERVICES}, "src/${go_services}"/${go_services})
+
 .PHONY: all
-all: clean prerequisites dockerise deploy
+all: clean prerequisites build dockerise deploy
 	$(MAKE) clean_bin
 
 .PHONY: prerequisites
@@ -41,7 +44,10 @@ prerequisites:
 			cp ${GRPC_HEALTH_PROBE_PATH} src/$${service}; \
 		fi; \
 	done
-	for d in $(SUBDIRS); do echo "<==> Target $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
+
+.PHONY: build
+build:
+	for d in $(GO_SERVICES); do echo "<==> Target $@ for src/$${d} <==>"; $(MAKE) -C src/$${d} $@; echo "========="; done
 
 .PHONY: dockerise
 dockerise:
@@ -59,8 +65,12 @@ clean: clean_bin
 
 .SILENT:
 clean_bin:
-	for service in ${MICROSERVICES}; do \
-		if [ -f "src/$${service}/${GRPC_HEALTH_PROBE}" ]; then \
-			rm -f src/$${service}/${GRPC_HEALTH_PROBE}; \
-		fi; \
-	done
+	@(for grpc_bin in ${SERVICE_GRPC_BIN}; do \
+		rm -f $${grpc_bin}; done;	\
+	)
+	@(for go_service_bin in ${GO_SERVICE_BIN}; do \
+		if [ -f $${go_service_bin} ] ; then \
+			rm -f $${go_service_bin};	\
+		fi;	\
+	done; \
+	)

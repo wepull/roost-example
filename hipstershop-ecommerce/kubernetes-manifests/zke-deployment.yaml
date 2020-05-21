@@ -38,6 +38,8 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+        imagePullPolicy: Never
+        
 ---
 apiVersion: v1
 kind: Service
@@ -103,6 +105,7 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
+          imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -159,6 +162,7 @@ spec:
           limits:
             cpu: 200m
             memory: 450Mi
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -236,6 +240,7 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
+          imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -300,6 +305,7 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -353,6 +359,7 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -410,6 +417,7 @@ spec:
           periodSeconds: 10
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:7070", "-rpc-timeout=5s"]
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -457,6 +465,7 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+        imagePullPolicy: Never
 ---
 
 apiVersion: apps/v1
@@ -495,6 +504,7 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -548,6 +558,7 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
@@ -658,6 +669,7 @@ spec:
           periodSeconds: 15
           exec:
             command: ["/bin/grpc_health_probe", "-addr=:9555"]
+        imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
