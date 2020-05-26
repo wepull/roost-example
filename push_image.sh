@@ -4,7 +4,7 @@
  IMAGE=$1
  IMAGE_TAR="$$.tar"
 
- if [ "$HOSTNAME" != "roost-utility" ]; then
+ if [ "$HOSTNAME" != "roost-worker" ]; then
      echo "Skip loading image to ZKE"
  else
  docker save $IMAGE > $IMAGE_TAR
