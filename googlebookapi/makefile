@@ -19,9 +19,7 @@ deploy:
 .PHONY: dockerise
 dockerise:
 	docker build -f src/Dockerfile -t ${IMAGE} src
-ifeq ($(HOSTNAME), roost-utility)
-		${shell pwd}/../push_image.sh "${IMAGE}"
-endif
+	${shell pwd}/../push_image.sh "${IMAGE}"
 
 .PHONY: clean
 clean: clean_bin
