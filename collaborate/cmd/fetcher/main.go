@@ -78,7 +78,7 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Error reading response from dev.to api. Error: %v", err)
+		log.Fatalf("error reading response from dev.to api. Error: %v", err)
 	}
 
 	var d bytes.Buffer
@@ -106,12 +106,33 @@ func cleanHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Sucessfully deleted article store"))
 }
 
+func serveHandler(w http.ResponseWriter, r *http.Request) {
+	outputPath := getFilePath()
+
+	content, err := readArticles(outputPath)
+	if err != nil {
+		log.Printf("\nerror reading articles from file. error: %v", err)
+		w.Header().Add("Content-Type", "text/plain")
+		w.Write([]byte("Content not available"))
+		return
+	}
+	w.Header().Add("Content-Type", "application/json")
+	log.Printf("Successfully retrieved articles...")
+	w.Write(content)
+}
+
+func readArticles(src string) ([]byte, error) {
+	data, err := ioutil.ReadFile(src)
+	return data, err
+}
+
 func main() {
 	log.Printf("Listening on :8080")
 
-	http.HandleFunc("/", rootHandler)
+	// http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/articles", articleHandler)
 	http.HandleFunc("/clean", cleanHandler)
+	http.HandleFunc("/serve", serveHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

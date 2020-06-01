@@ -11,10 +11,12 @@ dockerise: build
 	${MAKE} clean
 
 deploy:
-	@kubectl apply -f kubernetes-manifests/deploy.yaml 
+	@kubectl apply -f kubernetes-manifests/fetcher.yaml 
+	@kubectl apply -f kubernetes-manifests/retriever.yaml 
 
 undeploy:
-	@kubectl delete -f kubernetes-manifests/deploy.yaml >/dev/null 2>&1 || true
+	@kubectl delete -f kubernetes-manifests/fetcher.yaml >/dev/null 2>&1 || true
+	@kubectl delete -f kubernetes-manifests/retriever.yaml >/dev/null 2>&1 || true
 
 clean:
 	-@rm -rf bin/*
