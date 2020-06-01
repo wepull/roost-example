@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -35,13 +34,20 @@ func reqDevTO(r *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-func save(data []byte) {
+func getFilePath() string {
 	basePath, ok := os.LookupEnv("STORAGE_DIR")
 	if !ok {
 		log.Fatalf(" ENV[STORAGE_DIR] missing.")
 	}
 
 	outputPath := filepath.Join(basePath, outputFilename)
+	return outputPath
+}
+
+// save articles to local filesystem
+func save(data []byte) {
+
+	outputPath := getFilePath()
 	err := ioutil.WriteFile(outputPath, data, 0644)
 	if err != nil {
 		log.Printf("error saving output in file at: %s, error: %v", outputPath, err)
@@ -52,13 +58,10 @@ func save(data []byte) {
 
 // articleHandler handles request to fetch articles
 func articleHandler(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
-	queryParams := r.URL.Query()
 	reqQueryParam := ""
-	tag := queryParams["tag"]
-	if len(tag) > 0 {
-		reqQueryParam = fmt.Sprintf("?tag=%s", tag[0])
+	tag := r.URL.Query().Get("tag")
+	if tag != "" {
+		reqQueryParam = fmt.Sprintf("?tag=%s", tag)
 	}
 	log.Printf("Request with tag: %+v\n", tag)
 
@@ -71,29 +74,44 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(fmt.Sprintf("No articles retrieved. Reason: %v", err.Error())))
 		return
 	}
+	defer resp.Body.Close()
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("Error reading response from dev.to api. Error: %v", err)
 	}
+
 	var d bytes.Buffer
 	json.Indent(&d, data, "", "\t")
-	// log.Printf("%v", string(d.Bytes()))
-
 	w.Write(d.Bytes())
+
 	save(d.Bytes())
+
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/articles", 301)
 }
 
+func cleanHandler(w http.ResponseWriter, r *http.Request) {
+	outputPath := getFilePath()
+
+	if err := os.Remove(outputPath); err != nil {
+		log.Printf("Unable to delete article store file. error: %v", err)
+		w.WriteHeader(500)
+		w.Write([]byte(fmt.Sprintf("Unable to delete article store file. error: %v", err)))
+		return
+	}
+	log.Println("Sucessfully deleted article store")
+	w.Write([]byte("Sucessfully deleted article store"))
+}
+
 func main() {
-	flag.Parse()
 	log.Printf("Listening on :8080")
 
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/articles", articleHandler)
+	http.HandleFunc("/clean", cleanHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
