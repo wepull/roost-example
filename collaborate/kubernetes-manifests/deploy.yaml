@@ -34,6 +34,9 @@ spec:
       limits:
         memory: "128Mi"
         cpu: "200m"
+    ports:
+      - name: retriever-port
+        containerPort: 8081
     # readinessProbe:
     #   exec:
     #     command: 
@@ -56,6 +59,11 @@ spec:
   selector:
     app: collaborate
   ports:
-  - port: 8080
+  - name: fetcher-svc
+    port: 30047
     targetPort: 8080
     nodePort: 30047
+  - name: retriever-svc
+    port: 30048
+    targetPort: 8081
+    nodePort: 30048

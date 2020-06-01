@@ -67,6 +67,8 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := reqDevTO(req)
 	if err != nil {
 		log.Printf("unable to get articles. Error: %v", err)
+		w.WriteHeader(400)
+		w.Write([]byte(fmt.Sprintf("No articles retrieved. Reason: %v", err.Error())))
 		return
 	}
 
