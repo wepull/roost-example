@@ -1,6 +1,6 @@
 # Dependent microservices for collaborate feature in ROOST
 
-Two containerised services `fetcher` and `retriver` run in kubernetes environment in single pod but in two containers. `fetcher` services expose an api at <http://roost-master:30047/articles?tag=kubernetes> to fetch latest articles from <http://dev.to> and stores in provisioned pod volume. `retriver` service is dependent on `fetcher` service to create file where fetched articles are stored and it keeps checking for the file in every 3s of interval. As soon as articles file is found, `retriever` service reads the content and sends output to STDOUT.
+Two containerised services `fetcher` and `retriver` run in kubernetes environment in single pod but in two containers. `fetcher` services expose an api at <http://roost-master:30047/articles?tag=kubernetes> to fetch latest articles from <http://dev.to> and stores in provisioned pod volume. `retriver` service is dependent on `fetcher` service to create file where fetched articles are stored. As soon as articles file is found, `retriever` service reads the content and sends output over HTTP/browser.
 
 ## Commands to deploy
 
@@ -39,6 +39,7 @@ make dockerise
 4. Above content must be served by `retriever` service.
 
     ```bash
+        curl "http://roost-master:30048/"
         # --tail n: shows last n lines from logs
         kubectl logs collaborate retriever --tail 400
     ```
