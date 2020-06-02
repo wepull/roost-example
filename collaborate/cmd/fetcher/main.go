@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -40,7 +41,7 @@ func getFilePath(tag string) string {
 		log.Fatalf(" ENV[STORAGE_DIR] missing.")
 	}
 
-	outputPath := filepath.Join(basePath, outputFilename + tag + ".json")
+	outputPath := filepath.Join(basePath, outputFilename+tag+".json")
 	log.Println("%s", outputPath)
 	return outputPath
 }
@@ -115,13 +116,18 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalf("error reading response from dev.to api. Error: %v", err)
 	}
+	articles := data
 
-	var d bytes.Buffer
-	json.Indent(&d, data, "", "\t")
-	w.Write(d.Bytes())
+	// Indent only json data
+	if strings.Contains(resp.Header.Get("Content-Type"), "application/json") {
+		var d bytes.Buffer
+		json.Indent(&d, data, "", "\t")
+		articles = d.Bytes()
+	}
 
-	save(d.Bytes(), tag)
+	w.Write(articles)
 
+	save(articles, tag)
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -146,13 +152,13 @@ func serveHandler(w http.ResponseWriter, r *http.Request) {
 
 	content, err := readArticles(outputPath)
 	if err != nil {
-		log.Printf("\nerror reading articles from file. error: %v", err)
+		log.Printf("\nerror reading articles from file. Request received from address: %s, error: %v", r.RemoteAddr, err)
 		w.Header().Add("Content-Type", "text/plain")
 		w.Write([]byte("Content not available"))
 		return
 	}
 	w.Header().Add("Content-Type", "application/json")
-	log.Printf("Successfully retrieved articles...")
+	log.Printf("Successfully retrieved articles... Request received from address: %s", r.RemoteAddr)
 	w.Write(content)
 }
 
@@ -168,8 +174,8 @@ func main() {
 	http.HandleFunc("/articles", articleHandler)
 	http.HandleFunc("/clean", cleanHandler)
 	http.HandleFunc("/serve", serveHandler)
-  
+
 	log.Printf("Going to call fetchData")
-  fetchData([]string{ "kubernetes", "docker", "golang", "roost", "vertx" })
+	fetchData([]string{"kubernetes", "docker", "golang", "roost", "vertx"})
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
