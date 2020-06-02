@@ -5,6 +5,7 @@ build:
 
 dockerise: build
 	@docker build -f Dockerfile -t fetcher:latest .
+	${shell pwd}/../../push_image.sh fetcher:latest
 
 deploy:
 	@kubectl apply -f fetcher.yaml 

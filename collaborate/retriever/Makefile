@@ -5,6 +5,7 @@ build:
 
 dockerise: build
 	@docker build -f Dockerfile -t retriever:latest .
+	${shell pwd}/../../push_image.sh retriever:latest
 
 deploy:
 	@kubectl apply -f retriever.yaml 
