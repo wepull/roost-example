@@ -24,7 +24,8 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 	if fetcherEndpoint == "" {
 		log.Fatal("Missing fetcher service endpoint. Set ENV[FETCH_SERVICE] to continue")
 	}
-	endpoint := "http://" + fetcherEndpoint + "/serve"
+	
+	endpoint := "http://" + fetcherEndpoint + "/serve?tag=" + r.URL.Query().Get("tag")
 	req, _ := http.NewRequest(http.MethodGet, endpoint, nil)
 	resp, err := doRequest(req)
 	if err != nil {

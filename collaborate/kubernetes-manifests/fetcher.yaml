@@ -33,11 +33,9 @@ kind: Service
 metadata:
   name: fetcher
 spec:
-  type: NodePort
   selector:
     app: fetcher
   ports:
   - name: fetch-svc-port
     port: 30047
     targetPort: 8080
-    nodePort: 30047

@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-var outputFilename string = "devio_articles.json"
+var outputFilename string = "devio_articles_"
 
 func reqDevTO(r *http.Request) (*http.Response, error) {
 	client := http.Client{
@@ -34,26 +34,61 @@ func reqDevTO(r *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-func getFilePath() string {
+func getFilePath(tag string) string {
 	basePath, ok := os.LookupEnv("STORAGE_DIR")
 	if !ok {
 		log.Fatalf(" ENV[STORAGE_DIR] missing.")
 	}
 
-	outputPath := filepath.Join(basePath, outputFilename)
+	outputPath := filepath.Join(basePath, outputFilename + tag + ".json")
+	log.Println("%s", outputPath)
 	return outputPath
 }
 
 // save articles to local filesystem
-func save(data []byte) {
+func save(data []byte, tag string) {
 
-	outputPath := getFilePath()
+	outputPath := getFilePath(tag)
+	log.Println("%s", outputPath)
 	err := ioutil.WriteFile(outputPath, data, 0644)
 	if err != nil {
 		log.Printf("error saving output in file at: %s, error: %v", outputPath, err)
 	} else {
 		log.Printf("successfully saved articles to file. %s", outputPath)
 	}
+}
+
+// articleHandler handles request to fetch articles
+func fetchData(tags []string) {
+
+	for _, tag := range tags {
+		reqQueryParam := ""
+
+		if tag != "" {
+			reqQueryParam = fmt.Sprintf("?tag=%s", tag)
+		}
+		log.Printf("Request with tag: %+v\n", tag)
+
+		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("http://dev.to/api/articles%s", reqQueryParam), nil)
+
+		resp, err := reqDevTO(req)
+		if err != nil {
+			log.Printf("unable to get articles. Error: %v", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		data, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalf("error reading response from dev.to api. Error: %v", err)
+		}
+
+		var d bytes.Buffer
+		json.Indent(&d, data, "", "\t")
+
+		save(d.Bytes(), tag)
+	}
+
 }
 
 // articleHandler handles request to fetch articles
@@ -85,7 +120,7 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 	json.Indent(&d, data, "", "\t")
 	w.Write(d.Bytes())
 
-	save(d.Bytes())
+	save(d.Bytes(), tag)
 
 }
 
@@ -94,7 +129,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func cleanHandler(w http.ResponseWriter, r *http.Request) {
-	outputPath := getFilePath()
+	outputPath := getFilePath(r.URL.Query().Get("tag"))
 
 	if err := os.Remove(outputPath); err != nil {
 		log.Printf("Unable to delete article store file. error: %v", err)
@@ -107,7 +142,7 @@ func cleanHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveHandler(w http.ResponseWriter, r *http.Request) {
-	outputPath := getFilePath()
+	outputPath := getFilePath(r.URL.Query().Get("tag"))
 
 	content, err := readArticles(outputPath)
 	if err != nil {
@@ -133,6 +168,8 @@ func main() {
 	http.HandleFunc("/articles", articleHandler)
 	http.HandleFunc("/clean", cleanHandler)
 	http.HandleFunc("/serve", serveHandler)
-
+  
+	log.Printf("Going to call fetchData")
+  fetchData([]string{ "kubernetes", "docker", "golang", "roost", "vertx" })
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

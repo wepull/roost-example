@@ -26,20 +26,13 @@ make dockerise
 2. `fetcher` service must be running
 
     ```bash
-        kubectl logs pod collab-fetcher
+        kubectl logs collab-fetcher
     ```
 
-3. Make `curl` request to fetcher service to retrive articles which save articles into file
+3. Above content must be served by `retriever` service.
 
     ```bash
-        curl "http://roost-master:30047/articles?tag=kubernetes"
-        kubectl logs pod collab-fetcher
-    ```
-
-4. Above content must be served by `retriever` service.
-
-    ```bash
-        curl "http://roost-master:30048/"
+        curl "http://roost-master:30048/articles?tag=kubernetes"
         # --tail n: shows last n lines from logs
         kubectl logs collab-retriever --tail 400
     ```
