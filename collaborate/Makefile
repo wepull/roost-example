@@ -1,5 +1,5 @@
 
-all: clean build dockerise deploy
+all: clean build dockerise
 
 build:
 	CGO_ENABLED=0 GOOS=linux go build -o bin/fetcher cmd/fetcher/main.go
@@ -21,4 +21,4 @@ undeploy:
 clean:
 	-@rm -rf bin/*
 	-${MAKE} undeploy
-	
+
