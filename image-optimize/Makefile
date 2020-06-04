@@ -11,34 +11,34 @@ build:
 
 # Dockerise app with golang as base image
 golang:
-	DOCKER_BUILDKIT=1 docker build -f golang.Dockerfile -t image-optimize:golang .
+	docker build -f golang.Dockerfile -t image-optimize:golang .
 
 # Dockerise app with multistage build and alpine as base image
 alpine:
-	DOCKER_BUILDKIT=1 docker build -f alpine.Dockerfile -t image-optimize:alpine .
+	docker build -f alpine.Dockerfile -t image-optimize:alpine .
 
 # Dockerise app with multistage build and scratch as base image
 scratch:
-	DOCKER_BUILDKIT=1 docker build -f scratch.Dockerfile -t image-optimize:scratch .
+	docker build -f scratch.Dockerfile -t image-optimize:scratch .
 	
 # Dockerise app with multistage build and scratch as base image
 roost: build
-	DOCKER_BUILDKIT=1 docker build -f roost.Dockerfile -t image-optimize:roost .
+	docker build -f roost.Dockerfile -t image-optimize:roost .
 	
 # Dockerise app with golang as base image
 run-golang:
-	DOCKER_BUILDKIT=1 docker run image-optimize:golang /app/main
+	docker run image-optimize:golang /app/main
 
 # Dockerise app with multistage build and alpine as base image
 run-alpine:
-	DOCKER_BUILDKIT=1 docker run image-optimize:alpine /app/main
+	docker run image-optimize:alpine /app/main
 
 # Dockerise app with multistage build and scratch as base image
 run-scratch:
-	DOCKER_BUILDKIT=1 docker run image-optimize:scratch
+	docker run image-optimize:scratch
 
 run-roost:
-	DOCKER_BUILDKIT=1 docker run image-optimize:roost
+	docker run image-optimize:roost
 
 clean:
 	docker images | grep 'image-optimize' | awk '{print $$3}' | xargs -r docker rmi -f
