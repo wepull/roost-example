@@ -1,8 +1,9 @@
 #MAKE fike for implementing example
 
 .PHONY: all
-all: clean build dockerise deploy
-	$(MAKE) clean_bin
+all: clean golang alpine scratch roost
+	
+run: run-golang run-alpine run-scratch run-roost
 
 .PHONY: build
 build: 
@@ -39,6 +40,6 @@ run-scratch:
 run-roost:
 	DOCKER_BUILDKIT=1 docker run image-optimize:roost
 
-.PHONY: clean_bin
-clean_bin:
+clean:
+	docker images | grep 'image-optimize' | awk '{print $$3}' | xargs -r docker rmi -f
 	rm -f app
