@@ -21,7 +21,7 @@ scratch:
 	DOCKER_BUILDKIT=1 docker build -f scratch.Dockerfile -t image-optimize:scratch .
 	
 # Dockerise app with multistage build and scratch as base image
-roost:
+roost: build
 	DOCKER_BUILDKIT=1 docker build -f roost.Dockerfile -t image-optimize:roost .
 	
 # Dockerise app with golang as base image
