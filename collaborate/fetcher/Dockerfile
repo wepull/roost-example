@@ -1,6 +1,13 @@
-FROM alpine
+FROM golang:alpine as builder
+LABEL maintainer="mgdevstak" \
+    vendor="Zettabytes"
+ADD main.go  /go/src/github.com/roost-io/roost-example/collaborate/fetcher/
+WORKDIR /go/src/github.com/roost-io/roost-example/collaborate/fetcher
+RUN CGO_ENABLED=0 GOOS=linux go build -o fetcher main.go
+
+FROM scratch
 LABEL maintainer="mgdevstack" \
     vendor="Zettabytes"
-COPY fetcher /app/fetcher
+COPY --from=builder /go/src/github.com/roost-io/roost-example/collaborate/fetcher/fetcher /app/
 EXPOSE 8080
 ENTRYPOINT [ "/app/fetcher" ]

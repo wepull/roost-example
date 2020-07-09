@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: foo
+  labels:
+    app: foo-lab
+spec:
+  containers:
+  - name: foss
+    image: foss:v1
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - name: foss
+        containerPort: 8080
+  - name: fox
+    image: fox:v1
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+    ports:
+      - name: fox
+        containerPort: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: foo-service
+spec:
+  selector:
+    app: foo-lab
+  ports:
+  - name: foss-tcp
+    port: 80
+    targetPort: 8080
+  - name: fox-tcp
+    port: 81
+    targetPort: 8081
+    
