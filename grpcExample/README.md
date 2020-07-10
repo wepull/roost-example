@@ -21,10 +21,16 @@ gRPC has a standard health checking protocol that can be used from any language.
 
 ###### Using RKT Konsole to run application
 
-```bash 
+```bash
 cd $GOPATH/src/github.com/roost-io/roost-example-latest/grpcExample
 make
 ```
+
+> User can also leverage multistage build apart from above build-deploy via `make`. (As base image contains protogenc and go, its size is larger ~450Mb, so download may take time)
+>```bash
+> cd $GOPATH/src/github.com/roost-io/roost-example-latest/grpcExample
+> make multistage
+> ```
 
 ## View application logs 
 > Using `Workload Analytics` (RDE) for deployed application

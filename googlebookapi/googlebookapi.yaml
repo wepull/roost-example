@@ -4,10 +4,12 @@ metadata:
   name: zbio-sample-googlebookapi
   labels:
     app: zbio-sample-googlebookapi
+    owner: zbio
+    managed-by: roost
 spec:
   containers:
   - name: bookapi
-    image: zbio-example/googlebookapi:v1
+    image: googlebookapi:latest
     ports:
       - containerPort: 9999
     env:
@@ -20,7 +22,10 @@ spec:
     # imagePullPolicy: Never
     resources:
       requests: {}
-      limits: {}
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+    imagePullPolicy: Never
   restartPolicy: OnFailure
   terminationGracePeriodSeconds: 0
 
@@ -31,6 +36,8 @@ metadata:
   name: googlebookapi
   labels:
     app: zbio-sample-googlebookapi
+    owner: zbio
+    managed-by: roost
 spec:
   type: NodePort
   selector:

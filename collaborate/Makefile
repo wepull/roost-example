@@ -1,10 +1,11 @@
 SUBDIRS = fetcher retriever
-all: build dockerise
+all: dockerise undeploy deploy
+	${MAKE} clean
 
 build:
 	for d in $(SUBDIRS); do echo "<==> Target: $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
 
-dockerise: build
+dockerise:
 	for d in $(SUBDIRS); do echo "<==> Target: $@ for $$d <==>"; $(MAKE) -C $$d $@; echo "========="; done
 
 deploy:
