@@ -42,7 +42,7 @@ func getFilePath(tag string) string {
 	}
 
 	outputPath := filepath.Join(basePath, outputFilename+tag+".json")
-	log.Println("%s", outputPath)
+	log.Printf("%s", outputPath)
 	return outputPath
 }
 
@@ -50,7 +50,7 @@ func getFilePath(tag string) string {
 func save(data []byte, tag string) {
 
 	outputPath := getFilePath(tag)
-	log.Println("%s", outputPath)
+	log.Printf("%s", outputPath)
 	err := ioutil.WriteFile(outputPath, data, 0644)
 	if err != nil {
 		log.Printf("error saving output in file at: %s, error: %v", outputPath, err)
@@ -70,7 +70,7 @@ func fetchData(tags []string) {
 		}
 		log.Printf("Request with tag: %+v\n", tag)
 
-		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("http://dev.to/api/articles%s", reqQueryParam), nil)
+		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("https://dev.to/api/articles%s", reqQueryParam), nil)
 
 		resp, err := reqDevTO(req)
 		if err != nil {
@@ -83,11 +83,21 @@ func fetchData(tags []string) {
 		if err != nil {
 			log.Fatalf("error reading response from dev.to api. Error: %v", err)
 		}
-
-		var d bytes.Buffer
-		json.Indent(&d, data, "", "\t")
-
-		save(d.Bytes(), tag)
+		
+		log.Printf("Statuscode: %v",resp.StatusCode)
+		if resp.StatusCode != http.StatusOK {
+			log.Printf("Response Status: %d\tResponse: %s",resp.StatusCode, string(data))
+			return
+		}
+		
+		articles := data
+		// Indent only json data
+		if strings.Contains(resp.Header.Get("Content-Type"), "application/json") {
+			var d bytes.Buffer
+			json.Indent(&d, data, "", "\t")
+			articles = d.Bytes()
+		}
+		save(articles, tag)
 	}
 
 }
@@ -101,7 +111,7 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Request with tag: %+v\n", tag)
 
-	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("http://dev.to/api/articles%s", reqQueryParam), nil)
+	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("https://dev.to/api/articles%s", reqQueryParam), nil)
 
 	resp, err := reqDevTO(req)
 	if err != nil {
