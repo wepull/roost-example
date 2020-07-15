@@ -20,22 +20,8 @@ GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}
 HOSTNAME := $(shell hostname)
 
 .PHONY: all
-all: clean prerequisites build dockerise deploy
+all: clean build dockerise deploy
 	$(MAKE) clean_bin
-
-.PHONY: multistage
-multistage: clean prerequisites multistage-build deploy
-
-.PHONY: multistage-build
-multistage-build:
-	docker build --no-cache --target server -t ${SERVER_IMG}:${IMAGE_TAG} -f multistage.Dockerfile .
-	docker build --no-cache --target client -t ${CLIENT_IMG}:${IMAGE_TAG} -f multistage.Dockerfile .
-	${shell pwd}/../push_image.sh "${CLIENT_IMG}:${IMAGE_TAG}"
-	${shell pwd}/../push_image.sh "${SERVER_IMG}:${IMAGE_TAG}"
-
-.PHONY: prerequisites
-prerequisites:
-	cp -f ${GRPC_HEALTH_PROBE_PATH} . 
 
 .PHONY: build
 build: build-server build-client
@@ -65,5 +51,4 @@ clean: clean_bin
 
 .PHONY: clean_bin
 clean_bin:
-	rm -f ${GRPC_HEALTH_PROBE}
 	rm -f bin/*
