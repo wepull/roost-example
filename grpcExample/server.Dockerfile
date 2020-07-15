@@ -6,7 +6,7 @@ ADD . /go/src/github.com/roost-io/roost-example/grpcExample/
 WORKDIR /go/src/github.com/roost-io/roost-example/grpcExample/server-grpc
 RUN GOFLAGS=-mod=vendor CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ../bin/grpc-server
 
-FROM alpine:3.9 as server
+FROM alpine:3.9
 LABEL maintainer="mgdevstack" \
     vendor="Zettabytes" \
     owner="zbio"
