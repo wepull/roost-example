@@ -10,6 +10,6 @@ pre-built public images.
 ## To deploy in ZKE cluster
 
 Use [/kubernetes-manifests/zke-deployment.yaml](/kubernetes-manifests)
-Application can open in browser over http://roost-master:30046
+Application can open in browser over http://roost-controlplane:30046
 
 >_Note:_ Applicaiton is exposed over nodePort 30046

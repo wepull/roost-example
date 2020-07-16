@@ -34,7 +34,7 @@ kubectl logs service/myapp
 
 > Using browser
 
-* Open <http://roost-master:30047>
+* Open <http://roost-controlplane:30047>
 
 ### Following are valid `make` commands
 
@@ -64,19 +64,19 @@ Dockerise app with `multistage build and scratch` as base image
 make build-image-html-scratch
 ```
 
-Run application with `html:golang` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:golang` image (accessible at [http://roost-controlplane:30047](http://roost-controlplane:30047))
 
 ```bash
 make docker-run-html-golang
 ```
 
-Run application with `html:alpine` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:alpine` image (accessible at [http://roost-controlplane:30047](http://roost-controlplane:30047))
 
 ```bash
 make docker-run-html-alpine
 ```
 
-Run application with `html:scratch` image (accessible at [http://roost-master:30047](http://roost-master:30047))
+Run application with `html:scratch` image (accessible at [http://roost-controlplane:30047](http://roost-controlplane:30047))
 
 ```bash
 make docker-run-html-scratch

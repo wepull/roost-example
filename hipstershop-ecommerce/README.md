@@ -76,4 +76,4 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
 ```
 
 > Run `kubectl get pods` to verify the Pods are ready and running. The
-   application frontend should be available at http://roost-master:30046 .
+   application frontend should be available at http://roost-controlplane:30046 .
