@@ -13,5 +13,4 @@ hipstershop-ecommerce/src/productcatalogservice/grpc_health_probe-linux-amd64
 hipstershop-ecommerce/src/recommendationservice/grpc_health_probe-linux-amd64
 hipstershop-ecommerce/src/shippingservice/grpc_health_probe-linux-amd64
 
-grpcExample/grpc_health_probe-linux-amd64
 grpcExample/bin/**

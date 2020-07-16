@@ -6,7 +6,7 @@ ADD main.go  /go/src/github.com/roost-io/roost-example/collaborate/retriever/
 WORKDIR /go/src/github.com/roost-io/roost-example/collaborate/retriever
 RUN CGO_ENABLED=0 GOOS=linux go build -o retriever main.go
 
-FROM scratch
+FROM alpine:3.9
 LABEL maintainer="mgdevstack" \
     vendor="Zettabytes" \
     owner="zbio"

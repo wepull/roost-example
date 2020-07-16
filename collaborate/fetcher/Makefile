@@ -5,7 +5,7 @@ build:
 	CGO_ENABLED=0 GOOS=linux go build -o fetcher main.go
 
 dockerise:
-	@docker build -f Dockerfile -t fetcher:latest .
+	@docker build --no-cache -f Dockerfile -t fetcher:latest .
 	${shell pwd}/../../push_image.sh fetcher:latest
 
 deploy:
