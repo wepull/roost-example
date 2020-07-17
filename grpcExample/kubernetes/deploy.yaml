@@ -26,6 +26,8 @@ spec:
     metadata:
       labels:
         app: grpcapp1
+        owner: zbio
+        managed-by: roost
     spec:
       containers:
       - name: server

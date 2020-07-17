@@ -1,16 +1,16 @@
-# Copyright 2019 American Express Travel Related Services Company, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
-# in compliance with the License. You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software distributed under the License
-# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-# or implied. See the License for the specific language governing permissions and limitations under
-# the License.
+FROM mgdevstack/grpc-go:protobuf-v3.11.2 as builder
+LABEL maintainer="mgdevstack" \
+    vendor="Zettabytes" \
+    owner="zbio"
+ADD . /go/src/github.com/roost-io/roost-example/grpcExample/
+WORKDIR /go/src/github.com/roost-io/roost-example/grpcExample/client-grpc
+RUN GOFLAGS=-mod=vendor CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ../bin/grpc-client
+
 
 FROM alpine:3.9
-COPY bin/grpc-client /app/grpc-client
-COPY grpc_health_probe-linux-amd64 /bin/grpc_health_probe
+LABEL maintainer="mgdevstack" \
+    vendor="Zettabytes" \
+    owner="zbio"
+COPY --from=builder /go/src/github.com/roost-io/roost-example/grpcExample/grpc_health_probe-linux-amd64 /bin/grpc_health_probe
+COPY --from=builder /go/src/github.com/roost-io/roost-example/grpcExample/bin/grpc-client /app/grpc-client
 ENTRYPOINT [ "/app/grpc-client" ]
