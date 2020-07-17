@@ -45,12 +45,12 @@ kubectl logs service/googlebookapi --namespace default --tail 400
 * The digit should not have any special characters in between.
 
 > Using any browser
-* Open http://roost-master:30045/books/<isbn\>
->>sample URL: http://roost-master:30045/books/9788126568772
+* Open http://roost-controlplane:30045/books/<isbn\>
+>>sample URL: http://roost-controlplane:30045/books/9788126568772
 
 > Using RKT Konsole
-  * curl http://roost-master:30045/books/<isbn\>
-  >>sample URL: http://roost-master:30045/books/9788126568772
+  * curl http://roost-controlplane:30045/books/<isbn\>
+  >>sample URL: http://roost-controlplane:30045/books/9788126568772
 
 ``` 
 Raise any issue or feature request using RDE Help
