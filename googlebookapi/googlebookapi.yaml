@@ -19,7 +19,7 @@ spec:
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
-    # imagePullPolicy: Never
+    imagePullPolicy: Never
     resources:
       requests: {}
       limits:
