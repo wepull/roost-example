@@ -25,7 +25,6 @@ spec:
       limits:
         memory: "256Mi"
         cpu: "200m"
-    imagePullPolicy: Never
   restartPolicy: OnFailure
   terminationGracePeriodSeconds: 0
 
