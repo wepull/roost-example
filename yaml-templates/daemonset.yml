@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset
+  labels:
+    app: ds-example
+    owner: zbio
+spec:
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      containers:
+      - name: demo
+        image: busybox
+        command:
+        - sh
+        - -c
+        - >-
+          while true; do
+            echo POD_IP: $POD_IP NODE_NAME: $NODE_NAME;
+            cat /pod-labels/labels
+            sleep 600;
+          done
+        env:
+        - name: POD_IP  # uses the downwardAPI for getting the podIP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_NAME # name of the node the pod is scheduled on
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        volumeMounts:
+        - name: pod-labels
+          mountPath: /pod-labels
+          
+      tolerations:  # makes the pod schedulable on a tainted control-plane node
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+    
+      volumes:  # can also mount a volume from downwardAPI data
+      - name: pod-labels
+        downwardAPI:
+          items:
+          - path: labels
+            fieldRef:
+              fieldPath: metadata.labels

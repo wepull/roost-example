@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sidecar-pod
+  labels:
+    app: sidecar-example
+    owner: zbio
+spec:
+  containers:
+  - name: demo
+    image: alpine
+    command: ["/bin/sh","-c"]
+    args: ["apk add -q curl && curl localhost"]
+  
+  - name: nginx # this container will be available to the above container at localhost or localhost:80
+    image: nginx:alpine
+    ports:
+    - containerPort: 80 # nginx container listens at port 80

@@ -12,7 +12,7 @@
 
 CLIENT_IMG=clientimg
 SERVER_IMG=serverimg
-IMAGE_TAG=v1
+IMAGE_TAG=latest
 
 GRPC_HEALTH_PROBE=grpc_health_probe-linux-amd64
 GRPC_HEALTH_PROBE_PATH=../tool/${GRPC_HEALTH_PROBE}

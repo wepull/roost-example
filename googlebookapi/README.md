@@ -44,13 +44,15 @@ kubectl logs service/googlebookapi --namespace default --tail 400
  **ISBN:** `9781788999786`, **Book Name:** `Mastering Kubernetes`
 * The digit should not have any special characters in between.
 
-> Using any browser
+> Using any browser 
+* For single-node cluster, try roost-worker instead of roost-controlplane
 * Open http://roost-controlplane:30045/books/<isbn\>
->>sample URL: http://roost-controlplane:30045/books/9788126568772
+>>Sample URL: http://roost-controlplane:30045/books/9788126568772
 
 > Using RKT Konsole
+  * For single-node cluster, try roost-worker instead of roost-controlplane
   * curl http://roost-controlplane:30045/books/<isbn\>
-  >>sample URL: http://roost-controlplane:30045/books/9788126568772
+  >>Sample URL: http://roost-controlplane:30045/books/9788126568772
 
 ``` 
 Raise any issue or feature request using RDE Help

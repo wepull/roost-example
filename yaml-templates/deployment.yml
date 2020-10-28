@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-backend
+  labels:
+    owner: zbio
+    app: ecommerce-backend
+spec:
+  replicas: 1 # number of pods to bring up with the below template
+  selector: # the labels must select the pods defined below
+    matchLabels:
+      app: ecommerce-backend
+  template: # pod template it uses to create the replicas
+    metadata:
+      labels:
+        app: ecommerce-backend
+    spec:
+      containers:
+      - image: ecommerce:v1
+        name: ecommerce-backend
+        ports:
+        - containerPort: 8080
+          protocol: TCP

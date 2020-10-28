@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod # ecommerce backend pod
+metadata:
+  name: ecommerce-backend # name of the pod
+  labels:
+    owner: zbio
+    app: ecommerce-backend
+spec:
+  containers:
+  - name: backend # name of the container
+    image: ecommerce:v1 # image name
+    ports:
+    - containerPort: 8080 # port exposed by the container

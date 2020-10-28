@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-svc # name of the service
+  labels:
+    owner: zbio
+    app: ecommerce
+spec:
+  selector: # selects the pods with the following labels
+    app: ecommerce-backend
+  type: NodePort  # specifies the type of the service
+  ports:
+  - name: backend-port
+    port: 8080
+    protocol: TCP
+    targetPort: 8080  # container port to forward the traffic to
+    nodePort: 30081 # reserve this port on every node of the cluster for this service, randomnly assigned if not mentioned for a NodePort type service
