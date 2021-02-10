@@ -47,12 +47,17 @@ kubectl logs service/googlebookapi --namespace default --tail 400
 > Using any browser 
 * For single-node cluster, try roost-worker instead of roost-controlplane
 * Open http://roost-controlplane:30045/books/<isbn\>
->>Sample URL: http://roost-controlplane:30045/books/9788126568772
+* OR For a single node cluster, open http://roost-controlplane:30045/books/<isbn\>
+>>sample URL: http://roost-controlplane:30045/books/9788126568772
+>>sample URL for single node cluster: http://roost-worker:30045/books/9788126568772
 
 > Using RKT Konsole
   * For single-node cluster, try roost-worker instead of roost-controlplane
   * curl http://roost-controlplane:30045/books/<isbn\>
-  >>Sample URL: http://roost-controlplane:30045/books/9788126568772
+  >>sample URL: http://roost-controlplane:30045/books/9788126568772
+  * For a single node cluster, use roost-worker instead of roost-controlplane
+  * curl http://roost-worker:30045/books/<isbn\>
+  >>sample URL: http://roost-worker:30045/books/9788126568772
 
 ``` 
 Raise any issue or feature request using RDE Help
