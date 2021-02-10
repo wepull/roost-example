@@ -1,0 +1,18 @@
+{
+    "voter": {
+        "images": ["voter:latest"],
+        "depends_on": ["ballot"],
+        "k8s_manifests":["voter.yaml"],
+        "helm_charts":[],
+        "test_suite":"http://roost-controlplane:30088/tests/run",
+        "test_status_api": "http://roost-controlplane:30088/tests/result"
+    },
+    "ballot": {
+        "images": ["ballot:latest"],
+        "depends_on": [],
+        "k8s_manifests":["ballot.yaml"],
+        "helm_charts":[],
+        "test_suite":"http://roost-controlplane:30088/tests/run",
+        "test_status_api": "http://roost-controlplane:30088/tests/result"
+    }
+}
