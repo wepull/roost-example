@@ -1,0 +1,63 @@
+{
+    "frontend": {
+        "depends_on": [
+            "adservice",
+            "checkoutservice",
+            "currencyservice",
+            "productcatalogservice",
+            "cartservice",
+            "recommendationservice"
+        ],
+        "k8s_manifests": ["frontendservice.yaml"],
+        "test_suite":"http://roost-controlplane:30088/tests/run",
+        "test_status_api": "http://roost-controlplane:30088/tests/result"
+    },
+    "adservice": {
+        "k8s_manifests": ["adservice.yaml"]
+    },
+    "checkoutservice": {
+        "depends_on": [
+            "emailservice",
+            "paymentservice",
+            "shippingservice",
+            "currencyservice",
+            "productcatalogservice",
+            "cartservice"
+        ],
+        "k8s_manifests": ["checkoutservice.yaml"],
+        "test_suite":"http://roost-controlplane:30088/tests/run",
+        "test_status_api": "http://roost-controlplane:30088/tests/result"
+    },
+    "currencyservice": {
+        "images": [
+            "busybox:latest"
+        ],
+        "k8s_manifests": ["currencyservice.yaml"],
+        "test_suite":"http://roost-controlplane:30088/tests/run",
+        "test_status_api": "http://roost-controlplane:30088/tests/result"
+    },
+    "productcatalogservice": {
+        "k8s_manifests": ["productcatalogservice.yaml"]
+    },
+    "recommendationservice": {
+        "k8s_manifests": ["recommendationservice.yaml"]
+    },
+    "cartservice": {
+        "k8s_manifests": ["cartservice.yaml"]
+    },
+    "shippingservice": {
+        "k8s_manifests": ["shippingservice.yaml"]
+    },
+    "emailservice": {
+        "k8s_manifests": ["emailservice.yaml"]
+    },
+    "paymentservice": {
+        "k8s_manifests": ["paymentservice.yaml"]
+    },
+    "redis-cart": {
+        "depends_on": [
+            "cartservice"
+        ],
+        "k8s_manifests": ["redis-cart.yaml"]
+    }
+}
