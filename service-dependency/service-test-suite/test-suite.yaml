@@ -30,7 +30,7 @@ spec:
         app: sample-test-suite
     spec:
       containers:
-      - name: ballot
+      - name: service-test-suite
         image: service-test-suite:latest
         ports:
         - containerPort: 5003
