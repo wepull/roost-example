@@ -9,8 +9,8 @@
             "recommendationservice"
         ],
         "k8s_manifests": ["frontendservice.yaml"],
-        "test_suite":"http://roost-controlplane:30088/tests/run",
-        "test_status_api": "http://roost-controlplane:30088/tests/result"
+        "test_suite":"http://localhost:30088/tests/run",
+        "test_status_api": "http://localhost:30088/tests/result"
     },
     "adservice": {
         "k8s_manifests": ["adservice.yaml"]
@@ -25,16 +25,16 @@
             "cartservice"
         ],
         "k8s_manifests": ["checkoutservice.yaml"],
-        "test_suite":"http://roost-controlplane:30088/tests/run",
-        "test_status_api": "http://roost-controlplane:30088/tests/result"
+        "test_suite":"http://localhost:30088/tests/run",
+        "test_status_api": "http://localhost:30088/tests/result"
     },
     "currencyservice": {
         "images": [
             "busybox:latest"
         ],
         "k8s_manifests": ["currencyservice.yaml"],
-        "test_suite":"http://roost-controlplane:30088/tests/run",
-        "test_status_api": "http://roost-controlplane:30088/tests/result"
+        "test_suite":"http://localhost:30088/tests/run",
+        "test_status_api": "http://localhost:30088/tests/result"
     },
     "productcatalogservice": {
         "k8s_manifests": ["productcatalogservice.yaml"]
