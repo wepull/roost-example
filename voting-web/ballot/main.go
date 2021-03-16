@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-var port string = "80"
+var port string = "8080"
 var once sync.Once
 
 // candidateVotesStore holds map[candidate_id] = vote_count

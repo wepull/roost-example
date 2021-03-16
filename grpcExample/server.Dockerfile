@@ -12,4 +12,5 @@ LABEL maintainer="mgdevstack" \
     owner="zbio"
 COPY --from=builder /go/src/github.com/roost-io/roost-example/grpcExample/grpc_health_probe-linux-amd64 /bin/grpc_health_probe
 COPY --from=builder /go/src/github.com/roost-io/roost-example/grpcExample/bin/grpc-server /app/grpc-server
+USER nobody
 ENTRYPOINT [ "/app/grpc-server" ]

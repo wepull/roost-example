@@ -20,5 +20,7 @@ RUN npm install react-scripts@3.4.3 -g --silent
 COPY . ./
 
 EXPOSE 3000
+USER nobody
+
 # start app
 ENTRYPOINT ["npm", "start"]

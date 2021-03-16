@@ -12,4 +12,5 @@ LABEL maintainer="mgdevstack" \
     owner="zbio"
 COPY --from=builder /go/src/github.com/roost-io/roost-example/collaborate/fetcher/fetcher /app/
 EXPOSE 8080
+USER nobody
 ENTRYPOINT [ "/app/fetcher" ]
