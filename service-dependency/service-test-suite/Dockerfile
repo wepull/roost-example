@@ -10,4 +10,5 @@ LABEL maintainer="mgdevstack" \
     vendor="Zettabytes" \
     owner="zbio"
 COPY --from=builder /go/app /app
+USER nobody
 ENTRYPOINT ["/app"]

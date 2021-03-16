@@ -11,7 +11,7 @@ spec:
   ports:
   - name: ballot
     port: 80
-    targetPort: 80
+    targetPort: 8080
     nodePort: 30080
 
 ---
@@ -33,5 +33,5 @@ spec:
       - name: ballot
         image: ballot:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         imagePullPolicy: Never
