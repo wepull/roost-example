@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+
+  frontend:
+    build: .
+    environment:
+      - "DOCKER_REGISTRY_URL=http://${ROOST_CLUSTER_IP}:5002"
+      - "ENABLE_DELETE_IMAGES=true"
+      - "PUBLIC_REGISTRY_URL=${ROOST_CLUSTER_IP}:5002"
+    ports:
+      - "30001:8080"
+
+  backend:
+    image: registry:2
+    environment:
+      - "REGISTRY_STORAGE_DELETE_ENABLED=true"
+    ports:
+      - "30015:5000"

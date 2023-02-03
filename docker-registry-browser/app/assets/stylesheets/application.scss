@@ -1,0 +1,29 @@
+$theme-colors: (
+  "docker": #0db7ed,
+  "docker-alt": #384d54,
+  "dimage": #22aac4,
+  "dtag": #1bad73,
+  "dnamespace": #fa6812,
+  "dlayer": #d7dbe0,
+);
+@import "bootstrap";
+
+// App sections
+@import "application/body";
+
+// Components
+@import "components/alert";
+@import "components/copy_to_clipboard_icon";
+
+.btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+  display: none;
+}
+
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+  display: none;
+}
